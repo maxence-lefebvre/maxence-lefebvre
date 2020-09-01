@@ -15,7 +15,7 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: ...
 -->
 
-- 🔭 I’m currently working on my chair. JK, I am a Senior JS fullstack developer, mostly on ReactJS + NodeJS and Software Architect.
+- 🔭 I am a Senior JS fullstack developer, mostly on ReactJS + NodeJS and Software Architect.
 - 🌱 I’m currently learning Functional Programming (Monads, Functors, etc...)
 - 👯 I’m looking to collaborate on either an interesting FOSS or a game changing library.
 - 🤔 I’m looking for help with how to be a better writer / trainer.
