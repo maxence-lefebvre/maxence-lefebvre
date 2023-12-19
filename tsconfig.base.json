@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@feyroads/ext/array": ["libs/ext/array/src/index.ts"],
+      "@feyroads/math/graph": ["libs/math/graph/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
