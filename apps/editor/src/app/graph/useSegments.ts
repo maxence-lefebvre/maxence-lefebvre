@@ -1,7 +1,5 @@
 import { Point, Segment } from '@feyroads/math/graph';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { without } from 'lodash';
-import { randomElement } from '@feyroads/ext/array';
+import { useEffect, useRef, useState } from 'react';
 
 export const useSegments = (points: Point[]) => {
   const previousPoints = useRef<Point[]>(points);
@@ -15,31 +13,6 @@ export const useSegments = (points: Point[]) => {
       new Segment(p2, p3),
     ];
   });
-
-  const addRandomSegment = useCallback(() => {
-    const p1 = randomElement(points);
-    const p2 = randomElement(points);
-
-    if (p1.equals(p2)) {
-      return;
-    }
-
-    const randomSegment = new Segment(p1, p2);
-
-    if (segments.some((segment) => segment.equals(randomSegment))) {
-      return;
-    }
-
-    setSegments((prev) => [...prev, randomSegment]);
-  }, [points, segments]);
-
-  const removeRandomSegment = useCallback(() => {
-    if (segments.length === 0) {
-      return;
-    }
-
-    setSegments((prev) => without(prev, randomElement(prev)));
-  }, []);
 
   useEffect(() => {
     const previousLength = previousPoints.current.length;
@@ -60,5 +33,5 @@ export const useSegments = (points: Point[]) => {
     });
   }, [points]);
 
-  return { segments, addRandomSegment, removeRandomSegment };
+  return { segments };
 };
