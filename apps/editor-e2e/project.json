@@ -1,0 +1,30 @@
+{
+  "name": "editor-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/editor-e2e/src",
+  "targets": {
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/editor-e2e/cypress.config.ts",
+        "testingType": "e2e",
+        "devServerTarget": "editor:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "editor:serve:production"
+        },
+        "ci": {
+          "devServerTarget": "editor:serve-static"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "implicitDependencies": ["editor"],
+  "tags": []
+}
