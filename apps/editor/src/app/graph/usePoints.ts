@@ -31,9 +31,12 @@ export const usePoints = () => {
     setPoints((prev) => without(prev, randomElement(prev)));
   }, [points]);
 
+  const removeAllPoints = useCallback(() => setPoints([]), []);
+
   return {
     points,
     addRandomPoint,
     removeRandomPoint,
+    removeAllPoints,
   };
 };

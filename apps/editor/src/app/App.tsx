@@ -7,7 +7,7 @@ import { useGraph } from './graph/useGraph';
 export const App = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const { points, addRandomPoint, removeRandomPoint } = usePoints();
+  const { points, addRandomPoint, removeRandomPoint, removeAllPoints } = usePoints();
   const { segments, addRandomSegment, removeRandomSegment } =
     useSegments(points);
   const { graph } = useGraph(points, segments);
@@ -60,6 +60,7 @@ export const App = () => {
         <button onClick={removeRandomPoint}> Remove Point </button>
         <button onClick={addRandomSegment}> Add Segment </button>
         <button onClick={removeRandomSegment}> Remove Segment </button>
+        <button onClick={removeAllPoints}> Remove All </button>
       </div>
     </div>
   );
