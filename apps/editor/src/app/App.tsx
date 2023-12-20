@@ -1,33 +1,12 @@
-import { useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
-import { usePoints } from './graph/usePoints';
-import { useSegments } from './graph/useSegments';
 import { useGraph } from './graph/useGraph';
+import { Layer, Stage } from 'react-konva';
+import { DrawPoint } from './graph/DrawPoint';
+import { DrawSegment } from './graph/DrawSegment';
 
 export const App = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  const { points } = usePoints();
-  const { segments } = useSegments(points);
-  const { graph } = useGraph(points, segments);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-
-    if (!canvas) {
-      return;
-    }
-
-    const ctx = canvas.getContext('2d');
-
-    if (!ctx) {
-      return;
-    }
-
-    ctx.clearRect(0, 0, canvas.height, canvas.width);
-
-    graph.draw(ctx);
-  }, [graph]);
+  const { graph } = useGraph();
+  const { segments, points } = graph;
 
   return (
     <div
@@ -39,8 +18,7 @@ export const App = () => {
         align-items: center;
       `}
     >
-      <canvas
-        ref={canvasRef}
+      <Stage
         width={600}
         height={600}
         css={css`
@@ -48,14 +26,23 @@ export const App = () => {
           height: 600px;
           background-color: #2a5;
         `}
-      />
+      >
+        <Layer>
+          {segments.map((segment) => (
+            <DrawSegment key={segment.key()} segment={segment} />
+          ))}
+          {points.map((point) => (
+            <DrawPoint key={point.key()} point={point} />
+          ))}
+        </Layer>
+      </Stage>
       <div
         css={css`
           display: flex;
           gap: 20px;
         `}
       >
-        Later
+        Controls
       </div>
     </div>
   );

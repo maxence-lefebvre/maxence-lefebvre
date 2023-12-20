@@ -58,9 +58,11 @@
     "@emotion/styled": "11.11.0",
     "@swc/helpers": "~0.5.2",
     "invariant": "^2.2.4",
+    "konva": "^9.2.3",
     "lodash": "^4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-konva": "^18.2.10",
     "tslib": "^2.3.0"
   }
 }
