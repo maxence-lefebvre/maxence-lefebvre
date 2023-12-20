@@ -6,4 +6,13 @@ export class Graph {
     public readonly points: Point[] = [],
     public readonly segments: Segment[] = []
   ) {}
+
+  public addPointIfNotExist(newPoint: Point): Graph {
+    if (this.points.some((point) => point.equals(newPoint))) {
+      // Do nothing, point already exists.
+      return this;
+    }
+
+    return new Graph([...this.points, newPoint], this.segments);
+  }
 }

@@ -1,5 +1,5 @@
 import { Graph, Point, Segment } from '@feyroads/math/graph';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 const initialPoints = [
   new Point(200, 200),
@@ -18,9 +18,13 @@ const initialSegments = [
 ];
 
 export const useGraph = () => {
-  const [graph] = useState<Graph>(
+  const [graph, setGraph] = useState<Graph>(
     () => new Graph(initialPoints, initialSegments)
   );
 
-  return { graph };
+  const addPoint = useCallback((point: Point) => {
+    setGraph((prev) => prev.addPointIfNotExist(point));
+  }, []);
+
+  return { graph, addPoint };
 };
