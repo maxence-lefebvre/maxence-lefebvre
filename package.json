@@ -57,6 +57,7 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@swc/helpers": "~0.5.2",
+    "gh-pages": "^6.1.0",
     "invariant": "^2.2.4",
     "konva": "^9.2.3",
     "lodash": "^4.17.21",

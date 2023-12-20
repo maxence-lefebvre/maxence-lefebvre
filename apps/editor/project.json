@@ -16,7 +16,8 @@
           "mode": "development"
         },
         "production": {
-          "mode": "production"
+          "mode": "production",
+          "base": "/feyroads/"
         }
       }
     },
@@ -67,6 +68,26 @@
       "executor": "@nx/web:file-server",
       "options": {
         "buildTarget": "editor:build"
+      }
+    },
+    "deploy": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "gh-pages -d dist/apps/editor -m \"chore: deploy latest updates\""
+        ]
+      },
+      "configurations": {
+        "production": {
+          "commands": [
+            "git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git",
+            "git config user.name \"github-actions-bot\"",
+            "git config user.email \"support+actions@github.com\"",
+            "gh-pages -u \"github-actions-bot <support+actions@github.com>\" -d dist/apps/editor -m \"chore: deploy latest updates\""
+          ],
+          "parallel": false
+        }
       }
     }
   },
