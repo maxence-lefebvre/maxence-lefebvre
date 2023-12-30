@@ -1,5 +1,6 @@
 import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
 import { useCallback, useMemo, useState } from 'react';
+import { set } from 'lodash';
 
 const initialPoints = [
   new Point(200, 200),
@@ -37,6 +38,16 @@ export const useGraph = () => {
     [graph]
   );
 
+  const removeHoveredPointIfExist = useCallback(() => {
+    if (hoveredPoint) {
+      setGraph((prev) => prev.removePoint(hoveredPoint));
+      setHoveredPoint(null);
+      if (selectedPoint && hoveredPoint.equals(selectedPoint)) {
+        setSelectedPoint(null);
+      }
+    }
+  }, [hoveredPoint, selectedPoint]);
+
   const addOrSelectPoint = useCallback(
     (point: Point) => {
       if (hoveredPoint) {
@@ -45,6 +56,7 @@ export const useGraph = () => {
       }
       setGraph((prev) => prev.addPointIfNotExist(point));
       setSelectedPoint(point);
+      setHoveredPoint(point);
     },
     [hoveredPoint]
   );
@@ -55,5 +67,6 @@ export const useGraph = () => {
     addOrSelectPoint,
     hoveredPoint,
     hoverNearestPointIfClose,
+    removeHoveredPointIfExist,
   };
 };

@@ -15,4 +15,21 @@ export class Graph {
 
     return new Graph([...this.points, newPoint], this.segments);
   }
+
+  public removePoint(removedPoint: Point): Graph {
+    const nextPoints = this.points.filter(
+      (point) => !point.equals(removedPoint)
+    );
+
+    if (nextPoints.length === this.points.length) {
+      // Do nothing, point was not in the Graph.
+      return this;
+    }
+
+    const nextSegments = this.segments.filter(
+      (segment) => !segment.includes(removedPoint)
+    );
+
+    return new Graph(nextPoints, nextSegments);
+  }
 }

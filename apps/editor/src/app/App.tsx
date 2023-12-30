@@ -14,12 +14,12 @@ export const App = () => {
     addOrSelectPoint,
     hoveredPoint,
     hoverNearestPointIfClose,
+    removeHoveredPointIfExist,
   } = useGraph();
   const { segments, points } = graph;
 
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
-    (event) => {
-      const { evt } = event;
+    ({ evt }) => {
       const { offsetX, offsetY } = evt;
       addOrSelectPoint(new Point(offsetX, offsetY));
     },
@@ -28,12 +28,20 @@ export const App = () => {
 
   const onMouseMoveCanvas: NonNullable<KonvaNodeEvents['onMouseMove']> =
     useCallback(
-      (event) => {
-        const { evt } = event;
+      ({ evt }) => {
         const { offsetX, offsetY } = evt;
         hoverNearestPointIfClose(new Point(offsetX, offsetY));
       },
       [hoverNearestPointIfClose]
+    );
+
+  const onRightClickCanvas: NonNullable<KonvaNodeEvents['onContextMenu']> =
+    useCallback(
+      ({ evt }) => {
+        evt.preventDefault();
+        removeHoveredPointIfExist();
+      },
+      [removeHoveredPointIfExist]
     );
 
   return (
@@ -55,6 +63,7 @@ export const App = () => {
           background-color: #2a5;
         `}
         onClick={onClickCanvas}
+        onContextMenu={onRightClickCanvas}
         onMouseMove={onMouseMoveCanvas}
       >
         <Layer>
