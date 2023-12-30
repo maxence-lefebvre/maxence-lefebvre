@@ -1,11 +1,21 @@
 import { Segment } from './primitives/Segment';
 import { Point } from './primitives/Point';
+import invariant from 'invariant';
 
 export class Graph {
   public constructor(
     public readonly points: Point[] = [],
     public readonly segments: Segment[] = []
   ) {}
+
+  public static hydrate(data: string) {
+    const { points = [], segments = [] } = JSON.parse(data);
+    return new Graph(points.map(Point.from), segments.map(Segment.from));
+  }
+
+  public dehydrate() {
+    return JSON.stringify(this);
+  }
 
   public addPointIfNotExist(newPoint: Point): Graph {
     if (this.points.some((point) => point.equals(newPoint))) {

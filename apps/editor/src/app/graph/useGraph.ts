@@ -18,14 +18,22 @@ const initialSegments = [
 ];
 
 const SELECT_NEAREST_IF_DISTANCE_IS_LTE = 20;
+const STORAGE_KEY = 'feyroads::useGraph::graph';
 
 export const useGraph = () => {
   const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
 
-  const [graph, setGraph] = useState<Graph>(
-    () => new Graph(initialPoints, initialSegments)
-  );
+  const [graph, setGraph] = useState<Graph>(() => {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data
+      ? Graph.hydrate(data)
+      : new Graph(initialPoints, initialSegments);
+  });
+
+  const saveGraph = useCallback(() => {
+    localStorage.setItem(STORAGE_KEY, graph.dehydrate());
+  }, [graph]);
 
   const hoverNearestPointIfClose = useCallback(
     (point: Point) => {
@@ -110,6 +118,7 @@ export const useGraph = () => {
 
   return {
     graph,
+    saveGraph,
     selectedPoint,
     addOrSelectPoint,
     hoveredPoint,

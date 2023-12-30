@@ -26,4 +26,8 @@ export class Point {
   scale(factor: number) {
     return new Point(this.x * factor, this.y * factor);
   }
+
+  public static from({ x, y }: { x: number; y: number }) {
+    return new Point(x, y);
+  }
 }

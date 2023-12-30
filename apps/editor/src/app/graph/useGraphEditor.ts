@@ -7,6 +7,7 @@ import { useViewport } from './useViewport';
 export const useGraphEditor = () => {
   const {
     graph,
+    saveGraph,
     selectedPoint,
     addOrSelectPoint,
     hoveredPoint,
@@ -124,5 +125,6 @@ export const useGraphEditor = () => {
     onDragStartPoint: startDraggingPoint,
     onDragMovePoint,
     onDragEndPoint,
+    onClickSaveGraph: saveGraph,
   };
 };
