@@ -48,4 +48,13 @@ export class Graph {
 
     return new Graph(nextPoints, nextSegments);
   }
+
+  public addSegmentIfNotExist(nextSegment: Segment): Graph {
+    if (this.segments.some((segment) => segment.equals(nextSegment))) {
+      // nothing to do, segment already exists.
+      return this;
+    }
+
+    return new Graph(this.points, [...this.segments, nextSegment]);
+  }
 }

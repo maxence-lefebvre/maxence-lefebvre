@@ -40,27 +40,43 @@ export const useGraph = () => {
     [graph]
   );
 
-  const removeHoveredPointIfExist = useCallback(() => {
+  const removeHoveredPointIfExistElseUnselect = useCallback(() => {
     if (hoveredPoint) {
       setGraph((prev) => prev.removePoint(hoveredPoint));
       setHoveredPoint(null);
       if (selectedPoint && hoveredPoint.equals(selectedPoint)) {
         setSelectedPoint(null);
       }
+      return;
     }
+    // unselect if there is nothing to remove
+    setSelectedPoint(null);
   }, [hoveredPoint, selectedPoint]);
+
+  const connectSegmentWithSelection = useCallback(
+    (end: Point) => {
+      if (selectedPoint) {
+        setGraph((prev) =>
+          prev.addSegmentIfNotExist(new Segment(selectedPoint, end))
+        );
+      }
+    },
+    [selectedPoint]
+  );
 
   const addOrSelectPoint = useCallback(
     (point: Point) => {
       if (hoveredPoint) {
+        connectSegmentWithSelection(hoveredPoint);
         setSelectedPoint(hoveredPoint);
         return;
       }
       setGraph((prev) => prev.addPointIfNotExist(point));
+      connectSegmentWithSelection(point);
       setSelectedPoint(point);
       setHoveredPoint(point);
     },
-    [hoveredPoint]
+    [hoveredPoint, connectSegmentWithSelection]
   );
 
   const startDraggingPoint = useCallback(() => {
@@ -103,7 +119,7 @@ export const useGraph = () => {
     addOrSelectPoint,
     hoveredPoint,
     hoverNearestPointIfClose,
-    removeHoveredPointIfExist,
+    removeHoveredPointIfExistElseUnselect,
     startDraggingPoint,
     moveDraggingPoint,
     dropDraggingPoint,

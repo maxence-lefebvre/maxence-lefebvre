@@ -29,14 +29,7 @@ export const DrawPoint = memo(function DrawPoint({
 
   return (
     <Fragment>
-      <Circle
-        x={point.x}
-        y={point.y}
-        radius={RADIUS}
-        fill="black"
-        {...dragProps}
-        {...props}
-      />
+      <Circle x={point.x} y={point.y} radius={RADIUS} fill="black" {...props} />
       {isSelected && (
         <Arc
           x={point.x}
@@ -45,7 +38,6 @@ export const DrawPoint = memo(function DrawPoint({
           innerRadius={RADIUS * 0.6}
           outerRadius={RADIUS * 0.6 + 0.1}
           stroke="yellow"
-          {...dragProps}
         />
       )}
       {(isHovered || point.isDragging) && (

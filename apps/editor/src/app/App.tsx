@@ -14,7 +14,7 @@ export const App = () => {
     addOrSelectPoint,
     hoveredPoint,
     hoverNearestPointIfClose,
-    removeHoveredPointIfExist,
+    removeHoveredPointIfExistElseUnselect,
     startDraggingPoint,
     moveDraggingPoint,
     dropDraggingPoint,
@@ -40,9 +40,9 @@ export const App = () => {
     useCallback(
       ({ evt }) => {
         evt.preventDefault();
-        removeHoveredPointIfExist();
+        removeHoveredPointIfExistElseUnselect();
       },
-      [removeHoveredPointIfExist]
+      [removeHoveredPointIfExistElseUnselect]
     );
 
   const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
