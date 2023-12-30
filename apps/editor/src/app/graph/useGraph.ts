@@ -21,22 +21,39 @@ const SELECT_NEAREST_IF_DISTANCE_IS_LTE = 20;
 
 export const useGraph = () => {
   const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
+  const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
 
   const [graph, setGraph] = useState<Graph>(
     () => new Graph(initialPoints, initialSegments)
   );
 
-  const addOrSelectPoint = useCallback((point: Point) => {
-    const nearestPoint = PointSearcher.findNearestPoint(point, graph);
+  const hoverNearestPointIfClose = useCallback(
+    (point: Point) => {
+      const nearestPoint = PointSearcher.findNearestPoint(point, graph);
+      const isCloseEnough =
+        point.distanceTo(nearestPoint) <= SELECT_NEAREST_IF_DISTANCE_IS_LTE;
+      setHoveredPoint(isCloseEnough ? nearestPoint : null);
+    },
+    [graph]
+  );
 
-    const pointOfInterest =
-      point.distanceTo(nearestPoint) <= SELECT_NEAREST_IF_DISTANCE_IS_LTE
-        ? nearestPoint
-        : point;
+  const addOrSelectPoint = useCallback(
+    (point: Point) => {
+      if (hoveredPoint) {
+        setSelectedPoint(hoveredPoint);
+        return;
+      }
+      setGraph((prev) => prev.addPointIfNotExist(point));
+      setSelectedPoint(point);
+    },
+    [hoveredPoint]
+  );
 
-    setSelectedPoint(pointOfInterest);
-    setGraph((prev) => prev.addPointIfNotExist(pointOfInterest));
-  }, []);
-
-  return { graph, addPoint: addOrSelectPoint, selectedPoint };
+  return {
+    graph,
+    selectedPoint,
+    addOrSelectPoint,
+    hoveredPoint,
+    hoverNearestPointIfClose,
+  };
 };

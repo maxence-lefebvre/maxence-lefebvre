@@ -8,17 +8,33 @@ import { Point } from '@feyroads/math/graph';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
 export const App = () => {
-  const { graph, addPoint, selectedPoint } = useGraph();
+  const {
+    graph,
+    selectedPoint,
+    addOrSelectPoint,
+    hoveredPoint,
+    hoverNearestPointIfClose,
+  } = useGraph();
   const { segments, points } = graph;
 
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     (event) => {
       const { evt } = event;
       const { offsetX, offsetY } = evt;
-      addPoint(new Point(offsetX, offsetY));
+      addOrSelectPoint(new Point(offsetX, offsetY));
     },
-    [addPoint]
+    [addOrSelectPoint]
   );
+
+  const onMouseMoveCanvas: NonNullable<KonvaNodeEvents['onMouseMove']> =
+    useCallback(
+      (event) => {
+        const { evt } = event;
+        const { offsetX, offsetY } = evt;
+        hoverNearestPointIfClose(new Point(offsetX, offsetY));
+      },
+      [hoverNearestPointIfClose]
+    );
 
   return (
     <div
@@ -39,6 +55,7 @@ export const App = () => {
           background-color: #2a5;
         `}
         onClick={onClickCanvas}
+        onMouseMove={onMouseMoveCanvas}
       >
         <Layer>
           {segments.map((segment) => (
@@ -49,6 +66,7 @@ export const App = () => {
               key={point.key()}
               point={point}
               isSelected={!!selectedPoint?.equals(point)}
+              isHovered={!!hoveredPoint?.equals(point)}
             />
           ))}
         </Layer>
