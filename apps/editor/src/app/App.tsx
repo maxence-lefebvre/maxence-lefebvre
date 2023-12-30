@@ -6,66 +6,23 @@ import { DrawSegment } from './graph/DrawSegment';
 import { useCallback, useState } from 'react';
 import { Point, Segment } from '@feyroads/math/graph';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
+import { useGraphEditor } from './graph/useGraphEditor';
 
 export const App = () => {
   const {
     graph,
     selectedPoint,
-    addOrSelectPoint,
     hoveredPoint,
-    hoverNearestPointIfClose,
-    unselectIfExistElseRemoveHoveredPoint,
-    startDraggingPoint,
-    moveDraggingPoint,
-    dropDraggingPoint,
-  } = useGraph();
+    creatingSegment,
+    onClickCanvas,
+    onContextMenuCanvas,
+    onMouseMoveCanvas,
+    onDragStartPoint,
+    onDragMovePoint,
+    onDragEndPoint,
+  } = useGraphEditor();
+
   const { segments, points } = graph;
-
-  const [mousePosition, setMousePosition] = useState<Point | null>(null);
-
-  const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
-    ({ evt }) => {
-      if (evt.button === 2) {
-        // right click
-        unselectIfExistElseRemoveHoveredPoint();
-        return;
-      }
-      addOrSelectPoint(new Point(evt.offsetX, evt.offsetY));
-    },
-    [addOrSelectPoint]
-  );
-
-  const onMouseMoveCanvas: NonNullable<KonvaNodeEvents['onMouseMove']> =
-    useCallback(
-      ({ evt }) => {
-        hoverNearestPointIfClose(new Point(evt.offsetX, evt.offsetY));
-        setMousePosition(new Point(evt.offsetX, evt.offsetY));
-      },
-      [hoverNearestPointIfClose]
-    );
-
-  const onContextMenuCanvas: NonNullable<KonvaNodeEvents['onContextMenu']> =
-    useCallback(
-      ({ evt }) => {
-        evt.preventDefault();
-      },
-      [unselectIfExistElseRemoveHoveredPoint]
-    );
-
-  const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
-    useCallback(
-      ({ target }) => {
-        moveDraggingPoint(new Point(target.x(), target.y()));
-      },
-      [moveDraggingPoint]
-    );
-
-  const onDragEndPoint: NonNullable<KonvaNodeEvents['onDragEnd']> = useCallback(
-    ({ target }) => {
-      dropDraggingPoint(new Point(target.x(), target.y()));
-    },
-    [dropDraggingPoint]
-  );
 
   return (
     <div
@@ -93,21 +50,18 @@ export const App = () => {
           {segments.map((segment) => (
             <DrawSegment key={segment.key()} segment={segment} />
           ))}
-          {selectedPoint && mousePosition && (
-            <DrawSegment
-              dashed
-              segment={
-                new Segment(selectedPoint, hoveredPoint ?? mousePosition)
-              }
-            />
-          )}
+          {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
           {points.map((point, index) => (
             <DrawPoint
               key={index}
               point={point}
               isSelected={!!selectedPoint?.equals(point)}
               isHovered={!!hoveredPoint?.equals(point)}
-              onDragStart={startDraggingPoint}
+              onDragStart={
+                /* disable drag if a point is selected */ selectedPoint
+                  ? undefined
+                  : onDragStartPoint
+              }
               onDragMove={onDragMovePoint}
               onDragEnd={onDragEndPoint}
             />
