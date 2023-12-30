@@ -1,6 +1,5 @@
 import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
 import { useCallback, useState } from 'react';
-import { Simulate } from 'react-dom/test-utils';
 
 const initialPoints = [
   new Point(200, 200),

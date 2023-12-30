@@ -8,6 +8,7 @@ import { useCallback, useState } from 'react';
 export const App = () => {
   const {
     graph,
+    origin,
     scale,
     selectedPoint,
     hoveredPoint,
@@ -16,6 +17,7 @@ export const App = () => {
     onContextMenuCanvas,
     onMouseMoveCanvas,
     onWheelCanvas,
+    onDragEndCanvas,
     onDragStartPoint,
     onDragMovePoint,
     onDragEndPoint,
@@ -39,8 +41,10 @@ export const App = () => {
       `}
     >
       <Stage
-        scaleX={scale}
-        scaleY={scale}
+        draggable={!selectedPoint && !hoveredPoint}
+        x={origin.x}
+        y={origin.y}
+        scale={scale}
         width={600}
         height={600}
         css={[
@@ -56,6 +60,7 @@ export const App = () => {
         ]}
         onClick={onClickCanvas}
         onContextMenu={onContextMenuCanvas}
+        onDragEnd={onDragEndCanvas}
         onMouseMove={onMouseMoveCanvas}
         onWheel={onWheelCanvas}
       >

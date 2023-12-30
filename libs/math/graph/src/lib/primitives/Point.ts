@@ -14,4 +14,16 @@ export class Point {
   distanceTo(point: Point) {
     return Math.hypot(this.x - point.x, this.y - point.y);
   }
+
+  add(point: Point) {
+    return new Point(this.x + point.x, this.y + point.y);
+  }
+
+  substract(point: Point) {
+    return new Point(this.x - point.x, this.y - point.y);
+  }
+
+  scale(factor: number) {
+    return new Point(this.x * factor, this.y * factor);
+  }
 }

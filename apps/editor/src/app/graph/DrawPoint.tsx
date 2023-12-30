@@ -1,4 +1,3 @@
-import { css } from '@emotion/react';
 import { Point } from '@feyroads/math/graph';
 import { ComponentPropsWithoutRef, Fragment, memo } from 'react';
 import { Arc, Circle } from 'react-konva';

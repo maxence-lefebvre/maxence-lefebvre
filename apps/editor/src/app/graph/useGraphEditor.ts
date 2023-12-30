@@ -17,7 +17,19 @@ export const useGraphEditor = () => {
   } = useGraph();
 
   const [mousePosition, setMousePosition] = useState<Point | null>(null);
+
+  const [origin, setOrigin] = useState(new Point(0, 0));
   const [zoom, setZoom] = useState<number>(1);
+
+  const scale = useMemo(() => {
+    return new Point(1 / zoom, 1 / zoom);
+  }, [zoom]);
+
+  const getMousePosition = useCallback(
+    (evt: MouseEvent) =>
+      new Point(evt.offsetX, evt.offsetY).substract(origin).scale(zoom),
+    [origin, zoom]
+  );
 
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     ({ evt }) => {
@@ -26,28 +38,26 @@ export const useGraphEditor = () => {
         unselectIfExistElseRemoveHoveredPoint();
         return;
       }
-      addOrSelectPoint(new Point(evt.offsetX * zoom, evt.offsetY * zoom));
+      const position = getMousePosition(evt);
+
+      addOrSelectPoint(position);
     },
-    [addOrSelectPoint, zoom]
+    [addOrSelectPoint, unselectIfExistElseRemoveHoveredPoint, getMousePosition]
   );
 
   const onContextMenuCanvas: NonNullable<KonvaNodeEvents['onContextMenu']> =
-    useCallback(
-      ({ evt }) => {
-        evt.preventDefault();
-      },
-      [unselectIfExistElseRemoveHoveredPoint]
-    );
+    useCallback(({ evt }) => {
+      evt.preventDefault();
+    }, []);
 
   const onMouseMoveCanvas: NonNullable<KonvaNodeEvents['onMouseMove']> =
     useCallback(
       ({ evt }) => {
-        hoverNearestPointIfClose(
-          new Point(evt.offsetX * zoom, evt.offsetY * zoom)
-        );
-        setMousePosition(new Point(evt.offsetX * zoom, evt.offsetY * zoom));
+        const position = getMousePosition(evt);
+        hoverNearestPointIfClose(position);
+        setMousePosition(position);
       },
-      [hoverNearestPointIfClose]
+      [hoverNearestPointIfClose, getMousePosition]
     );
 
   const onWheelCanvas: NonNullable<KonvaNodeEvents['onWheel']> = useCallback(
@@ -57,6 +67,12 @@ export const useGraphEditor = () => {
     },
     []
   );
+
+  const onDragEndCanvas: NonNullable<KonvaNodeEvents['onDragEnd']> =
+    useCallback(({ target }) => {
+      const nextOrigin = new Point(target.x(), target.y());
+      setOrigin(nextOrigin);
+    }, []);
 
   const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
     useCallback(
@@ -83,7 +99,8 @@ export const useGraphEditor = () => {
 
   return {
     graph,
-    scale: 1 / zoom,
+    origin: origin,
+    scale,
     selectedPoint,
     hoveredPoint,
     creatingSegment,
@@ -91,6 +108,7 @@ export const useGraphEditor = () => {
     onContextMenuCanvas,
     onMouseMoveCanvas,
     onWheelCanvas,
+    onDragEndCanvas,
     onDragStartPoint: startDraggingPoint,
     onDragMovePoint,
     onDragEndPoint,
