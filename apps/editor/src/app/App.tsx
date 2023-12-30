@@ -14,7 +14,7 @@ export const App = () => {
     addOrSelectPoint,
     hoveredPoint,
     hoverNearestPointIfClose,
-    removeHoveredPointIfExistElseUnselect,
+    unselectIfExistElseRemoveHoveredPoint,
     startDraggingPoint,
     moveDraggingPoint,
     dropDraggingPoint,
@@ -25,6 +25,11 @@ export const App = () => {
 
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     ({ evt }) => {
+      if (evt.button === 2) {
+        // right click
+        unselectIfExistElseRemoveHoveredPoint();
+        return;
+      }
       addOrSelectPoint(new Point(evt.offsetX, evt.offsetY));
     },
     [addOrSelectPoint]
@@ -39,13 +44,12 @@ export const App = () => {
       [hoverNearestPointIfClose]
     );
 
-  const onRightClickCanvas: NonNullable<KonvaNodeEvents['onContextMenu']> =
+  const onContextMenuCanvas: NonNullable<KonvaNodeEvents['onContextMenu']> =
     useCallback(
       ({ evt }) => {
         evt.preventDefault();
-        removeHoveredPointIfExistElseUnselect();
       },
-      [removeHoveredPointIfExistElseUnselect]
+      [unselectIfExistElseRemoveHoveredPoint]
     );
 
   const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
@@ -82,7 +86,7 @@ export const App = () => {
           background-color: #2a5;
         `}
         onClick={onClickCanvas}
-        onContextMenu={onRightClickCanvas}
+        onContextMenu={onContextMenuCanvas}
         onMouseMove={onMouseMoveCanvas}
       >
         <Layer>
