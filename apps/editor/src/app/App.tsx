@@ -1,28 +1,32 @@
 import { css } from '@emotion/react';
-import { useGraph } from './graph/useGraph';
 import { Layer, Stage } from 'react-konva';
 import { DrawPoint } from './graph/DrawPoint';
 import { DrawSegment } from './graph/DrawSegment';
-import { useCallback, useState } from 'react';
-import { Point, Segment } from '@feyroads/math/graph';
-import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 import { useGraphEditor } from './graph/useGraphEditor';
+import { useCallback, useState } from 'react';
 
 export const App = () => {
   const {
     graph,
+    scale,
     selectedPoint,
     hoveredPoint,
     creatingSegment,
     onClickCanvas,
     onContextMenuCanvas,
     onMouseMoveCanvas,
+    onWheelCanvas,
     onDragStartPoint,
     onDragMovePoint,
     onDragEndPoint,
   } = useGraphEditor();
 
+  const [isHoveringPoint, setIsHoveringPoint] = useState(false);
+
   const { segments, points } = graph;
+
+  const onMouseEnterPoint = useCallback(() => setIsHoveringPoint(true), []);
+  const onMouseLeavePoint = useCallback(() => setIsHoveringPoint(false), []);
 
   return (
     <div
@@ -35,16 +39,25 @@ export const App = () => {
       `}
     >
       <Stage
+        scaleX={scale}
+        scaleY={scale}
         width={600}
         height={600}
-        css={css`
-          width: 600px;
-          height: 600px;
-          background-color: #2a5;
-        `}
+        css={[
+          css`
+            width: 600px;
+            height: 600px;
+            background-color: #2a5;
+          `,
+          isHoveringPoint &&
+            css`
+              cursor: move;
+            `,
+        ]}
         onClick={onClickCanvas}
         onContextMenu={onContextMenuCanvas}
         onMouseMove={onMouseMoveCanvas}
+        onWheel={onWheelCanvas}
       >
         <Layer>
           {segments.map((segment) => (
@@ -57,13 +70,12 @@ export const App = () => {
               point={point}
               isSelected={!!selectedPoint?.equals(point)}
               isHovered={!!hoveredPoint?.equals(point)}
-              onDragStart={
-                /* disable drag if a point is selected */ selectedPoint
-                  ? undefined
-                  : onDragStartPoint
-              }
+              draggable={!selectedPoint}
+              onDragStart={onDragStartPoint}
               onDragMove={onDragMovePoint}
               onDragEnd={onDragEndPoint}
+              onMouseEnter={onMouseEnterPoint}
+              onMouseLeave={onMouseLeavePoint}
             />
           ))}
         </Layer>

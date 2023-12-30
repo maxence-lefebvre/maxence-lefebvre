@@ -1,7 +1,7 @@
+import { css } from '@emotion/react';
 import { Point } from '@feyroads/math/graph';
 import { ComponentPropsWithoutRef, Fragment, memo } from 'react';
-import { Arc, Circle, Shape } from 'react-konva';
-import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
+import { Arc, Circle } from 'react-konva';
 
 export type DrawPointProps = ComponentPropsWithoutRef<typeof Circle> & {
   point: Point;
@@ -15,18 +15,14 @@ export const DrawPoint = memo(function DrawPoint({
   point,
   isSelected = false,
   isHovered = false,
+  draggable,
   onDragStart,
   onDragMove,
   onDragEnd,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }: DrawPointProps) {
-  const dragProps = {
-    draggable: !!onDragStart,
-    onDragStart,
-    onDragMove,
-    onDragEnd,
-  };
-
   return (
     <Fragment>
       <Circle x={point.x} y={point.y} radius={RADIUS} fill="black" {...props} />
@@ -46,7 +42,12 @@ export const DrawPoint = memo(function DrawPoint({
           y={point.y}
           radius={RADIUS * 0.4}
           fill="yellow"
-          {...dragProps}
+          draggable={draggable}
+          onDragStart={onDragStart}
+          onDragMove={onDragMove}
+          onDragEnd={onDragEnd}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
         />
       )}
     </Fragment>

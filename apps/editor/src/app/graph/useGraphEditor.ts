@@ -17,6 +17,7 @@ export const useGraphEditor = () => {
   } = useGraph();
 
   const [mousePosition, setMousePosition] = useState<Point | null>(null);
+  const [zoom, setZoom] = useState<number>(1);
 
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     ({ evt }) => {
@@ -25,9 +26,9 @@ export const useGraphEditor = () => {
         unselectIfExistElseRemoveHoveredPoint();
         return;
       }
-      addOrSelectPoint(new Point(evt.offsetX, evt.offsetY));
+      addOrSelectPoint(new Point(evt.offsetX * zoom, evt.offsetY * zoom));
     },
-    [addOrSelectPoint]
+    [addOrSelectPoint, zoom]
   );
 
   const onContextMenuCanvas: NonNullable<KonvaNodeEvents['onContextMenu']> =
@@ -41,11 +42,21 @@ export const useGraphEditor = () => {
   const onMouseMoveCanvas: NonNullable<KonvaNodeEvents['onMouseMove']> =
     useCallback(
       ({ evt }) => {
-        hoverNearestPointIfClose(new Point(evt.offsetX, evt.offsetY));
-        setMousePosition(new Point(evt.offsetX, evt.offsetY));
+        hoverNearestPointIfClose(
+          new Point(evt.offsetX * zoom, evt.offsetY * zoom)
+        );
+        setMousePosition(new Point(evt.offsetX * zoom, evt.offsetY * zoom));
       },
       [hoverNearestPointIfClose]
     );
+
+  const onWheelCanvas: NonNullable<KonvaNodeEvents['onWheel']> = useCallback(
+    ({ evt }) => {
+      const direction = Math.sign(evt.deltaY);
+      setZoom((prev) => Math.max(1, Math.min(5, prev + direction)));
+    },
+    []
+  );
 
   const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
     useCallback(
@@ -72,12 +83,14 @@ export const useGraphEditor = () => {
 
   return {
     graph,
+    scale: 1 / zoom,
     selectedPoint,
     hoveredPoint,
     creatingSegment,
     onClickCanvas,
     onContextMenuCanvas,
     onMouseMoveCanvas,
+    onWheelCanvas,
     onDragStartPoint: startDraggingPoint,
     onDragMovePoint,
     onDragEndPoint,

@@ -1,8 +1,6 @@
 import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
-import { useCallback, useMemo, useState } from 'react';
-import { set } from 'lodash';
+import { useCallback, useState } from 'react';
 import { Simulate } from 'react-dom/test-utils';
-import drag = Simulate.drag;
 
 const initialPoints = [
   new Point(200, 200),
