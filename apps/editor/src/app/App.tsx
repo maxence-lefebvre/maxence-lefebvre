@@ -13,6 +13,7 @@ export const App = () => {
     selectedPoint,
     hoveredPoint,
     creatingSegment,
+    isStageDraggable,
     onClickCanvas,
     onContextMenuCanvas,
     onMouseMoveCanvas,
@@ -41,7 +42,7 @@ export const App = () => {
       `}
     >
       <Stage
-        draggable={!selectedPoint && !hoveredPoint}
+        draggable={isStageDraggable}
         x={origin.x}
         y={origin.y}
         scale={scale}
