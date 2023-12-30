@@ -53,13 +53,14 @@ export const useGraph = () => {
     setSelectedPoint(null);
   }, [hoveredPoint, selectedPoint]);
 
-  const connectSegmentWithSelection = useCallback(
+  const selectAndConnectSegmentWithSelection = useCallback(
     (end: Point) => {
       if (selectedPoint) {
         setGraph((prev) =>
           prev.addSegmentIfNotExist(new Segment(selectedPoint, end))
         );
       }
+      setSelectedPoint(end);
     },
     [selectedPoint]
   );
@@ -67,16 +68,14 @@ export const useGraph = () => {
   const addOrSelectPoint = useCallback(
     (point: Point) => {
       if (hoveredPoint) {
-        connectSegmentWithSelection(hoveredPoint);
-        setSelectedPoint(hoveredPoint);
+        selectAndConnectSegmentWithSelection(hoveredPoint);
         return;
       }
       setGraph((prev) => prev.addPointIfNotExist(point));
-      connectSegmentWithSelection(point);
-      setSelectedPoint(point);
+      selectAndConnectSegmentWithSelection(point);
       setHoveredPoint(point);
     },
-    [hoveredPoint, connectSegmentWithSelection]
+    [hoveredPoint, selectAndConnectSegmentWithSelection]
   );
 
   const startDraggingPoint = useCallback(() => {

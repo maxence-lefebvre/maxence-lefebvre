@@ -3,8 +3,8 @@ import { useGraph } from './graph/useGraph';
 import { Layer, Stage } from 'react-konva';
 import { DrawPoint } from './graph/DrawPoint';
 import { DrawSegment } from './graph/DrawSegment';
-import { useCallback } from 'react';
-import { Point } from '@feyroads/math/graph';
+import { useCallback, useState } from 'react';
+import { Point, Segment } from '@feyroads/math/graph';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
 export const App = () => {
@@ -21,6 +21,8 @@ export const App = () => {
   } = useGraph();
   const { segments, points } = graph;
 
+  const [mousePosition, setMousePosition] = useState<Point | null>(null);
+
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     ({ evt }) => {
       addOrSelectPoint(new Point(evt.offsetX, evt.offsetY));
@@ -32,6 +34,7 @@ export const App = () => {
     useCallback(
       ({ evt }) => {
         hoverNearestPointIfClose(new Point(evt.offsetX, evt.offsetY));
+        setMousePosition(new Point(evt.offsetX, evt.offsetY));
       },
       [hoverNearestPointIfClose]
     );
@@ -86,6 +89,14 @@ export const App = () => {
           {segments.map((segment) => (
             <DrawSegment key={segment.key()} segment={segment} />
           ))}
+          {selectedPoint && mousePosition && (
+            <DrawSegment
+              dashed
+              segment={
+                new Segment(selectedPoint, hoveredPoint ?? mousePosition)
+              }
+            />
+          )}
           {points.map((point, index) => (
             <DrawPoint
               key={index}
