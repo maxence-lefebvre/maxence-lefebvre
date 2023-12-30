@@ -15,13 +15,15 @@ export const App = () => {
     hoveredPoint,
     hoverNearestPointIfClose,
     removeHoveredPointIfExist,
+    startDraggingPoint,
+    moveDraggingPoint,
+    dropDraggingPoint,
   } = useGraph();
   const { segments, points } = graph;
 
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     ({ evt }) => {
-      const { offsetX, offsetY } = evt;
-      addOrSelectPoint(new Point(offsetX, offsetY));
+      addOrSelectPoint(new Point(evt.offsetX, evt.offsetY));
     },
     [addOrSelectPoint]
   );
@@ -29,8 +31,7 @@ export const App = () => {
   const onMouseMoveCanvas: NonNullable<KonvaNodeEvents['onMouseMove']> =
     useCallback(
       ({ evt }) => {
-        const { offsetX, offsetY } = evt;
-        hoverNearestPointIfClose(new Point(offsetX, offsetY));
+        hoverNearestPointIfClose(new Point(evt.offsetX, evt.offsetY));
       },
       [hoverNearestPointIfClose]
     );
@@ -43,6 +44,21 @@ export const App = () => {
       },
       [removeHoveredPointIfExist]
     );
+
+  const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
+    useCallback(
+      ({ target }) => {
+        moveDraggingPoint(new Point(target.x(), target.y()));
+      },
+      [moveDraggingPoint]
+    );
+
+  const onDragEndPoint: NonNullable<KonvaNodeEvents['onDragEnd']> = useCallback(
+    ({ target }) => {
+      dropDraggingPoint(new Point(target.x(), target.y()));
+    },
+    [dropDraggingPoint]
+  );
 
   return (
     <div
@@ -70,12 +86,15 @@ export const App = () => {
           {segments.map((segment) => (
             <DrawSegment key={segment.key()} segment={segment} />
           ))}
-          {points.map((point) => (
+          {points.map((point, index) => (
             <DrawPoint
-              key={point.key()}
+              key={index}
               point={point}
               isSelected={!!selectedPoint?.equals(point)}
               isHovered={!!hoveredPoint?.equals(point)}
+              onDragStart={startDraggingPoint}
+              onDragMove={onDragMovePoint}
+              onDragEnd={onDragEndPoint}
             />
           ))}
         </Layer>

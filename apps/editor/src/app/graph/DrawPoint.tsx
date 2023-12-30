@@ -1,8 +1,9 @@
 import { Point } from '@feyroads/math/graph';
-import { Fragment, memo } from 'react';
+import { ComponentPropsWithoutRef, Fragment, memo } from 'react';
 import { Arc, Circle, Shape } from 'react-konva';
+import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
-export type DrawPointProps = {
+export type DrawPointProps = ComponentPropsWithoutRef<typeof Circle> & {
   point: Point;
   isSelected?: boolean;
   isHovered?: boolean;
@@ -14,10 +15,28 @@ export const DrawPoint = memo(function DrawPoint({
   point,
   isSelected = false,
   isHovered = false,
+  onDragStart,
+  onDragMove,
+  onDragEnd,
+  ...props
 }: DrawPointProps) {
+  const dragProps = {
+    draggable: !!onDragStart,
+    onDragStart,
+    onDragMove,
+    onDragEnd,
+  };
+
   return (
     <Fragment>
-      <Circle x={point.x} y={point.y} radius={RADIUS} fill="black" />
+      <Circle
+        x={point.x}
+        y={point.y}
+        radius={RADIUS}
+        fill="black"
+        {...dragProps}
+        {...props}
+      />
       {isSelected && (
         <Arc
           x={point.x}
@@ -26,10 +45,17 @@ export const DrawPoint = memo(function DrawPoint({
           innerRadius={RADIUS * 0.6}
           outerRadius={RADIUS * 0.6 + 0.1}
           stroke="yellow"
+          {...dragProps}
         />
       )}
-      {isHovered && (
-        <Circle x={point.x} y={point.y} radius={RADIUS * 0.4} fill="yellow" />
+      {(isHovered || point.isDragging) && (
+        <Circle
+          x={point.x}
+          y={point.y}
+          radius={RADIUS * 0.4}
+          fill="yellow"
+          {...dragProps}
+        />
       )}
     </Fragment>
   );

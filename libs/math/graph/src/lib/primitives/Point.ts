@@ -1,4 +1,6 @@
 export class Point {
+  public isDragging = false;
+
   public constructor(public readonly x: number, public readonly y: number) {}
 
   key() {

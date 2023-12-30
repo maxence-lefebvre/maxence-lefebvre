@@ -32,4 +32,20 @@ export class Graph {
 
     return new Graph(nextPoints, nextSegments);
   }
+
+  public replacePoint(previousPoint: Point, nextPoint: Point): Graph {
+    const nextPoints = this.points.map((point) =>
+      point.equals(previousPoint) ? nextPoint : point
+    );
+    const nextSegments = this.segments.map((segment) =>
+      segment.includes(previousPoint)
+        ? new Segment(
+            nextPoint,
+            segment.p1.equals(previousPoint) ? segment.p2 : segment.p1
+          )
+        : segment
+    );
+
+    return new Graph(nextPoints, nextSegments);
+  }
 }

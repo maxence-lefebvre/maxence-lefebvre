@@ -1,6 +1,8 @@
 import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
 import { useCallback, useMemo, useState } from 'react';
 import { set } from 'lodash';
+import { Simulate } from 'react-dom/test-utils';
+import drag = Simulate.drag;
 
 const initialPoints = [
   new Point(200, 200),
@@ -61,6 +63,40 @@ export const useGraph = () => {
     [hoveredPoint]
   );
 
+  const startDraggingPoint = useCallback(() => {
+    if (hoveredPoint) {
+      const draggedPoint = new Point(hoveredPoint.x, hoveredPoint.y);
+      draggedPoint.isDragging = true;
+
+      setGraph((prev) => prev.replacePoint(hoveredPoint, draggedPoint));
+    }
+  }, [hoveredPoint]);
+
+  const moveDraggingPoint = useCallback(
+    (newPosition: Point) => {
+      newPosition.isDragging = true;
+      const draggedPoint = graph.points.find((point) => point.isDragging);
+
+      setGraph((prev) => {
+        return draggedPoint
+          ? prev.replacePoint(draggedPoint, newPosition)
+          : prev;
+      });
+
+      setSelectedPoint((prev) =>
+        draggedPoint && prev?.equals(draggedPoint) ? newPosition : prev
+      );
+    },
+    [graph]
+  );
+
+  const dropDraggingPoint = useCallback((newPosition: Point) => {
+    setGraph((prev) => {
+      const draggedPoint = prev.points.find((point) => point.isDragging);
+      return draggedPoint ? prev.replacePoint(draggedPoint, newPosition) : prev;
+    });
+  }, []);
+
   return {
     graph,
     selectedPoint,
@@ -68,5 +104,8 @@ export const useGraph = () => {
     hoveredPoint,
     hoverNearestPointIfClose,
     removeHoveredPointIfExist,
+    startDraggingPoint,
+    moveDraggingPoint,
+    dropDraggingPoint,
   };
 };
