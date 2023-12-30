@@ -1,4 +1,4 @@
-import { Graph, Point, Segment } from '@feyroads/math/graph';
+import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
 import { useCallback, useMemo, useState } from 'react';
 
 const initialPoints = [
@@ -17,6 +17,8 @@ const initialSegments = [
   new Segment(p2, p3),
 ];
 
+const SELECT_NEAREST_IF_DISTANCE_IS_LTE = 20;
+
 export const useGraph = () => {
   const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
 
@@ -24,10 +26,17 @@ export const useGraph = () => {
     () => new Graph(initialPoints, initialSegments)
   );
 
-  const addPoint = useCallback((point: Point) => {
-    setSelectedPoint(point);
-    setGraph((prev) => prev.addPointIfNotExist(point));
+  const addOrSelectPoint = useCallback((point: Point) => {
+    const nearestPoint = PointSearcher.findNearestPoint(point, graph);
+
+    const pointOfInterest =
+      point.distanceTo(nearestPoint) <= SELECT_NEAREST_IF_DISTANCE_IS_LTE
+        ? nearestPoint
+        : point;
+
+    setSelectedPoint(pointOfInterest);
+    setGraph((prev) => prev.addPointIfNotExist(pointOfInterest));
   }, []);
 
-  return { graph, addPoint, selectedPoint };
+  return { graph, addPoint: addOrSelectPoint, selectedPoint };
 };

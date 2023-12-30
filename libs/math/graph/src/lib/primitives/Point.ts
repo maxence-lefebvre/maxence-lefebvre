@@ -8,4 +8,8 @@ export class Point {
   equals(point: Point) {
     return this.x === point.x && this.y === point.y;
   }
+
+  distanceTo(point: Point) {
+    return Math.hypot(this.x - point.x, this.y - point.y);
+  }
 }

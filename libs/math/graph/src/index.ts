@@ -1,3 +1,4 @@
-export * from './lib/primitives/point';
-export * from './lib/primitives/segment';
-export * from './lib/graph';
+export * from './lib/primitives/Point';
+export * from './lib/primitives/Segment';
+export * from './lib/Graph';
+export * from './lib/PointSearcher';

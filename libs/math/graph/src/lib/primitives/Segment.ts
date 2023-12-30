@@ -1,4 +1,4 @@
-import { Point } from './point';
+import { Point } from './Point';
 
 export class Segment {
   constructor(public readonly p1: Point, public readonly p2: Point) {}
