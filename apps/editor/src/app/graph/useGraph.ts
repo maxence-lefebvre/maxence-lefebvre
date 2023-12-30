@@ -18,13 +18,16 @@ const initialSegments = [
 ];
 
 export const useGraph = () => {
+  const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
+
   const [graph, setGraph] = useState<Graph>(
     () => new Graph(initialPoints, initialSegments)
   );
 
   const addPoint = useCallback((point: Point) => {
+    setSelectedPoint(point);
     setGraph((prev) => prev.addPointIfNotExist(point));
   }, []);
 
-  return { graph, addPoint };
+  return { graph, addPoint, selectedPoint };
 };

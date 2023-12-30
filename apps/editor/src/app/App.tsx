@@ -8,7 +8,7 @@ import { Point } from '@feyroads/math/graph';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
 export const App = () => {
-  const { graph, addPoint } = useGraph();
+  const { graph, addPoint, selectedPoint } = useGraph();
   const { segments, points } = graph;
 
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
@@ -45,7 +45,11 @@ export const App = () => {
             <DrawSegment key={segment.key()} segment={segment} />
           ))}
           {points.map((point) => (
-            <DrawPoint key={point.key()} point={point} />
+            <DrawPoint
+              key={point.key()}
+              point={point}
+              isSelected={!!selectedPoint?.equals(point)}
+            />
           ))}
         </Layer>
       </Stage>
