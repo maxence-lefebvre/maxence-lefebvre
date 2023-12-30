@@ -4,7 +4,7 @@ import { DrawPoint } from './graph/DrawPoint';
 import { DrawSegment } from './graph/DrawSegment';
 import { useGraphEditor } from './graph/useGraphEditor';
 import { useCallback, useState } from 'react';
-import { IconDeviceFloppy } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react';
 
 export const App = () => {
   const {
@@ -24,6 +24,7 @@ export const App = () => {
     onDragMovePoint,
     onDragEndPoint,
     onClickSaveGraph,
+    onClickDisposeGraph,
   } = useGraphEditor();
 
   const [isHoveringPoint, setIsHoveringPoint] = useState(false);
@@ -96,6 +97,9 @@ export const App = () => {
       >
         <button onClick={onClickSaveGraph}>
           <IconDeviceFloppy />
+        </button>
+        <button onClick={onClickDisposeGraph}>
+          <IconTrash />
         </button>
       </div>
     </div>

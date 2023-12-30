@@ -35,6 +35,10 @@ export const useGraph = () => {
     localStorage.setItem(STORAGE_KEY, graph.dehydrate());
   }, [graph]);
 
+  const disposeGraph = useCallback(() => {
+    setGraph(new Graph(initialPoints, initialSegments));
+  }, []);
+
   const hoverNearestPointIfClose = useCallback(
     (point: Point) => {
       const nearestPoint = PointSearcher.findNearestPoint(point, graph);
@@ -119,6 +123,7 @@ export const useGraph = () => {
   return {
     graph,
     saveGraph,
+    disposeGraph,
     selectedPoint,
     addOrSelectPoint,
     hoveredPoint,

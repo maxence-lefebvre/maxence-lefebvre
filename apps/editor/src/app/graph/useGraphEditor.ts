@@ -8,6 +8,7 @@ export const useGraphEditor = () => {
   const {
     graph,
     saveGraph,
+    disposeGraph,
     selectedPoint,
     addOrSelectPoint,
     hoveredPoint,
@@ -126,5 +127,6 @@ export const useGraphEditor = () => {
     onDragMovePoint,
     onDragEndPoint,
     onClickSaveGraph: saveGraph,
+    onClickDisposeGraph: disposeGraph,
   };
 };
