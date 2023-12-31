@@ -29,12 +29,12 @@ export const Canvas = memo(function Canvas({
       x={origin.x}
       y={origin.y}
       scale={scale}
-      width={1200}
-      height={1000}
+      width={600}
+      height={600}
       css={[
         css`
-          width: 1200px;
-          height: 1000px;
+          width: 600px;
+          height: 600px;
           background-color: #2a5;
         `,
         isHoveringPoint &&

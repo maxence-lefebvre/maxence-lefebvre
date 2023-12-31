@@ -24,7 +24,7 @@ export const DrawGraphEditor = memo(function DrawGraphEditor({
   const { points } = graph;
 
   return (
-    <Layer>
+    <Layer opacity={0.5}>
       {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
 
       {points.map((point, index) => (
