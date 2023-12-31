@@ -7,31 +7,27 @@ import { useCallback, useState } from 'react';
 import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react';
 import { DrawPolygon } from './graph/DrawPolygon';
 import { Envelope } from '@feyroads/math/graph';
+import { useViewport } from './graph/useViewport';
+import { useGraphState } from './graph/useGraphState';
 
 export const App = () => {
+  const graphState = useGraphState();
+  const viewport = useViewport({ graphState });
+
   const {
-    graph,
-    origin,
-    scale,
-    selectedPoint,
-    hoveredPoint,
     creatingSegment,
-    isStageDraggable,
     onClickCanvas,
     onContextMenuCanvas,
     onMouseMoveCanvas,
     onWheelCanvas,
-    onDragEndCanvas,
     onDragStartPoint,
     onDragMovePoint,
     onDragEndPoint,
-    onClickSaveGraph,
-    onClickDisposeGraph,
-  } = useGraphEditor();
+  } = useGraphEditor({ graphState, viewport });
 
   const [isHoveringPoint, setIsHoveringPoint] = useState(false);
 
-  const { segments, points } = graph;
+  const { segments, points } = graphState.graph;
 
   const onMouseEnterPoint = useCallback(() => setIsHoveringPoint(true), []);
   const onMouseLeavePoint = useCallback(() => setIsHoveringPoint(false), []);
@@ -47,10 +43,10 @@ export const App = () => {
       `}
     >
       <Stage
-        draggable={isStageDraggable}
-        x={origin.x}
-        y={origin.y}
-        scale={scale}
+        draggable={viewport.isStageDraggable}
+        x={viewport.origin.x}
+        y={viewport.origin.y}
+        scale={viewport.scale}
         width={600}
         height={600}
         css={[
@@ -66,7 +62,7 @@ export const App = () => {
         ]}
         onClick={onClickCanvas}
         onContextMenu={onContextMenuCanvas}
-        onDragEnd={onDragEndCanvas}
+        onDragEnd={viewport.onDragEndCanvas}
         onMouseMove={onMouseMoveCanvas}
         onWheel={onWheelCanvas}
       >
@@ -87,9 +83,9 @@ export const App = () => {
             <DrawPoint
               key={index}
               point={point}
-              isSelected={!!selectedPoint?.equals(point)}
-              isHovered={!!hoveredPoint?.equals(point)}
-              draggable={!selectedPoint}
+              isSelected={!!graphState.selectedPoint?.equals(point)}
+              isHovered={!!graphState.hoveredPoint?.equals(point)}
+              draggable={!graphState.selectedPoint}
               onDragStart={onDragStartPoint}
               onDragMove={onDragMovePoint}
               onDragEnd={onDragEndPoint}
@@ -105,10 +101,10 @@ export const App = () => {
           gap: 20px;
         `}
       >
-        <button onClick={onClickSaveGraph}>
+        <button onClick={graphState.saveGraph}>
           <IconDeviceFloppy />
         </button>
-        <button onClick={onClickDisposeGraph}>
+        <button onClick={graphState.disposeGraph}>
           <IconTrash />
         </button>
       </div>

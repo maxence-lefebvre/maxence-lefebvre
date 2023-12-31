@@ -1,50 +1,30 @@
-import { useGraph } from './useGraph';
 import { useCallback, useMemo } from 'react';
 import { Point, Segment } from '@feyroads/math/graph';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
-import { useViewport } from './useViewport';
+import { GraphState, Viewport } from './types';
 
-export const useGraphEditor = () => {
-  const {
-    graph,
-    saveGraph,
-    disposeGraph,
-    selectedPoint,
-    addOrSelectPoint,
-    hoveredPoint,
-    hoverNearestPointIfClose,
-    unselectIfExistElseRemoveHoveredPoint,
-    startDraggingPoint,
-    moveDraggingPoint,
-    dropDraggingPoint,
-  } = useGraph();
-
-  const {
-    mousePosition,
-    setMousePosition,
-    origin,
-    setOrigin,
-    zoom,
-    setZoom,
-    scale,
-    getMousePositionOnViewport,
-  } = useViewport();
-
+export const useGraphEditor = ({
+  graphState,
+  viewport,
+}: {
+  graphState: GraphState;
+  viewport: Viewport;
+}) => {
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     ({ evt }) => {
       if (evt.button === 2) {
         // right click
-        unselectIfExistElseRemoveHoveredPoint();
+        graphState.unselectIfExistElseRemoveHoveredPoint();
         return;
       }
-      const position = getMousePositionOnViewport(evt);
+      const position = viewport.getMousePositionOnViewport(evt);
 
-      addOrSelectPoint(position);
+      graphState.addOrSelectPoint(position);
     },
     [
-      addOrSelectPoint,
-      unselectIfExistElseRemoveHoveredPoint,
-      getMousePositionOnViewport,
+      graphState.addOrSelectPoint,
+      graphState.unselectIfExistElseRemoveHoveredPoint,
+      viewport.getMousePositionOnViewport,
     ],
   );
 
@@ -56,77 +36,59 @@ export const useGraphEditor = () => {
   const onMouseMoveCanvas: NonNullable<KonvaNodeEvents['onMouseMove']> =
     useCallback(
       ({ evt }) => {
-        const position = getMousePositionOnViewport(evt);
-        hoverNearestPointIfClose(position);
-        setMousePosition(position);
+        const position = viewport.getMousePositionOnViewport(evt);
+        graphState.hoverNearestPointIfClose(position);
+        viewport.setMousePosition(position);
       },
-      [hoverNearestPointIfClose, setMousePosition, getMousePositionOnViewport],
+      [
+        graphState.hoverNearestPointIfClose,
+        viewport.setMousePosition,
+        viewport.getMousePositionOnViewport,
+      ],
     );
 
   const onWheelCanvas: NonNullable<KonvaNodeEvents['onWheel']> = useCallback(
     ({ evt }) => {
       const direction = Math.sign(evt.deltaY);
-      setZoom(zoom + direction);
+      viewport.setZoom(viewport.zoom + direction);
     },
-    [zoom, setZoom],
+    [viewport.zoom, viewport.setZoom],
   );
-
-  const isStageDraggable =
-    !selectedPoint &&
-    !hoveredPoint &&
-    !graph.points.some((point) => point.isDragging);
-
-  const onDragEndCanvas: NonNullable<KonvaNodeEvents['onDragEnd']> =
-    useCallback(
-      ({ target }) => {
-        if (!isStageDraggable) {
-          return;
-        }
-        setOrigin(new Point(target.x(), target.y()));
-      },
-      [setOrigin, isStageDraggable],
-    );
 
   const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
     useCallback(
       ({ target }) => {
-        moveDraggingPoint(new Point(target.x(), target.y()));
+        graphState.moveDraggingPoint(new Point(target.x(), target.y()));
       },
-      [moveDraggingPoint],
+      [graphState.moveDraggingPoint],
     );
 
   const onDragEndPoint: NonNullable<KonvaNodeEvents['onDragEnd']> = useCallback(
     ({ evt, target }) => {
-      dropDraggingPoint(new Point(target.x(), target.y()));
+      graphState.dropDraggingPoint(new Point(target.x(), target.y()));
     },
-    [dropDraggingPoint],
+    [graphState.dropDraggingPoint],
   );
 
   const creatingSegment = useMemo(
     () =>
-      selectedPoint &&
-      mousePosition &&
-      new Segment(selectedPoint, hoveredPoint ?? mousePosition),
-    [selectedPoint, hoveredPoint, mousePosition],
+      graphState.selectedPoint &&
+      viewport.mousePosition &&
+      new Segment(
+        graphState.selectedPoint,
+        graphState.hoveredPoint ?? viewport.mousePosition,
+      ),
+    [graphState.selectedPoint, graphState.hoveredPoint, viewport.mousePosition],
   );
 
   return {
-    graph,
-    origin: origin,
-    scale,
-    selectedPoint,
-    hoveredPoint,
     creatingSegment,
-    isStageDraggable,
     onClickCanvas,
     onContextMenuCanvas,
     onMouseMoveCanvas,
     onWheelCanvas,
-    onDragEndCanvas,
-    onDragStartPoint: startDraggingPoint,
+    onDragStartPoint: graphState.startDraggingPoint,
     onDragMovePoint,
     onDragEndPoint,
-    onClickSaveGraph: saveGraph,
-    onClickDisposeGraph: disposeGraph,
   };
 };

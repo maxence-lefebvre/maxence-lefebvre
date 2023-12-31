@@ -1,5 +1,6 @@
 import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
 import { useCallback, useState } from 'react';
+import { GraphState } from './types';
 
 const initialPoints = [
   new Point(200, 200),
@@ -20,7 +21,7 @@ const initialSegments = [
 const SELECT_NEAREST_IF_DISTANCE_IS_LTE = 20;
 const STORAGE_KEY = 'feyroads::useGraph::graph';
 
-export const useGraph = () => {
+export const useGraphState = (): GraphState => {
   const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
 
