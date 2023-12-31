@@ -1,14 +1,13 @@
 import { css } from '@emotion/react';
 import { Layer, Stage } from 'react-konva';
-import { DrawPoint } from './graph/DrawPoint';
-import { DrawSegment } from './graph/DrawSegment';
 import { useGraphEditor } from './graph/useGraphEditor';
 import { useCallback, useState } from 'react';
 import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react';
-import { DrawPolygon } from './graph/DrawPolygon';
-import { Envelope } from '@feyroads/math/graph';
 import { useViewport } from './graph/useViewport';
 import { useGraphState } from './graph/useGraphState';
+import { DrawPoint, DrawSegment } from '@feyroads/math/components';
+import { DrawWorld } from '@feyroads/world/components';
+import { World } from '@feyroads/world/core';
 
 export const App = () => {
   const graphState = useGraphState();
@@ -73,11 +72,7 @@ export const App = () => {
 
           {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
 
-          <DrawPolygon
-            polygon={
-              new Envelope(segments[0], { width: 80, roundness: 20 }).polygon
-            }
-          />
+          <DrawWorld world={new World(graphState.graph)} />
 
           {points.map((point, index) => (
             <DrawPoint

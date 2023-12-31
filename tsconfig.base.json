@@ -16,7 +16,10 @@
     "baseUrl": ".",
     "paths": {
       "@feyroads/ext/array": ["libs/ext/array/src/index.ts"],
-      "@feyroads/math/graph": ["libs/math/graph/src/index.ts"]
+      "@feyroads/math/components": ["libs/math/components/src/index.ts"],
+      "@feyroads/math/graph": ["libs/math/graph/src/index.ts"],
+      "@feyroads/world/components": ["libs/world/components/src/index.ts"],
+      "@feyroads/world/core": ["libs/world/core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
