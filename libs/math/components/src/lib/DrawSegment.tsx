@@ -1,8 +1,8 @@
 import { Segment } from '@feyroads/math/graph';
-import { memo } from 'react';
+import { ComponentPropsWithoutRef, memo } from 'react';
 import { Line } from 'react-konva';
 
-export type DrawSegmentProps = {
+export type DrawSegmentProps = ComponentPropsWithoutRef<typeof Line> & {
   dashed?: boolean;
   segment: Segment;
 };
@@ -10,6 +10,7 @@ export type DrawSegmentProps = {
 export const DrawSegment = memo(function ({
   segment,
   dashed = false,
+  ...props
 }: DrawSegmentProps) {
   const { p1, p2 } = segment;
 
@@ -19,6 +20,7 @@ export const DrawSegment = memo(function ({
       stroke="black"
       width={2}
       {...(dashed && { dash: [3, 3] })}
+      {...props}
     />
   );
 });

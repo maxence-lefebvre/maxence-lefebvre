@@ -1,14 +1,33 @@
 import { Polygon } from './Polygon';
 import { Segment } from './Segment';
+import { Point } from './Point';
 
 export class Envelope {
   public readonly polygon: Polygon;
 
   public constructor(
     public readonly skeleton: Segment,
-    { width, roundness = 0 }: { width: number; roundness?: number },
+    {
+      width = 80,
+      roundness = 0,
+      polygon,
+    }: { width?: number; roundness?: number; polygon?: Polygon },
   ) {
-    this.polygon = this.generatePolygon(width, roundness);
+    this.polygon = polygon ?? this.generatePolygon(width, roundness);
+  }
+
+  public static from(polygon: Polygon) {
+    return new Envelope(new Segment(new Point(0, 0), new Point(0, 0)), {
+      polygon,
+    });
+  }
+
+  public static breakPolygonsSegmentsAtIntersectionsForAll(
+    envelopes: Envelope[],
+  ) {
+    return Polygon.breakSegmentsAtIntersectionsForAll(
+      envelopes.map(({ polygon }) => polygon),
+    ).map(Envelope.from);
   }
 
   private generatePolygon(width: number, roundness: number) {

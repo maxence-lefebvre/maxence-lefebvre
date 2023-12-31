@@ -1,14 +1,15 @@
 import { Polygon } from '@feyroads/math/graph';
-import { memo, useCallback } from 'react';
+import { ComponentPropsWithoutRef, memo, useCallback } from 'react';
 import { Shape } from 'react-konva';
 import Konva from 'konva';
 
-export type DrawPolygonProps = {
+export type DrawPolygonProps = ComponentPropsWithoutRef<typeof Shape> & {
   polygon: Polygon;
 };
 
 export const DrawPolygon = memo(function DrawPolygon({
   polygon,
+  ...props
 }: DrawPolygonProps) {
   const { points } = polygon;
 
@@ -26,5 +27,7 @@ export const DrawPolygon = memo(function DrawPolygon({
     [points],
   );
 
-  return <Shape fill="rgba(0,0,255,.3)" stroke="blue" sceneFunc={scene} />;
+  return (
+    <Shape fill="rgba(0,0,255,.3)" stroke="blue" sceneFunc={scene} {...props} />
+  );
 });

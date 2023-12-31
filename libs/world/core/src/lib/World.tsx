@@ -21,7 +21,7 @@ export class World {
   private readonly graphicOptions: WorldGraphicOptions;
 
   public constructor(
-    private readonly graph: Graph,
+    public readonly graph: Graph,
     graphicOptions?: WorldGraphicOptions,
   ) {
     this.graphicOptions = defaultsDeep(
@@ -29,8 +29,10 @@ export class World {
       defaultWorldGraphicOptions,
     );
 
-    this.graph.segments.forEach((segment) => {
-      this.envelopes.push(new Envelope(segment, this.graphicOptions.roads));
-    });
+    this.envelopes = Envelope.breakPolygonsSegmentsAtIntersectionsForAll(
+      this.graph.segments.map(
+        (segment) => new Envelope(segment, this.graphicOptions.roads),
+      ),
+    );
   }
 }

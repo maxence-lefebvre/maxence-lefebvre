@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { Layer, Stage } from 'react-konva';
 import { useGraphEditor } from './graph/useGraphEditor';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react';
 import { useViewport } from './graph/useViewport';
 import { useGraphState } from './graph/useGraphState';
@@ -26,10 +26,13 @@ export const App = () => {
 
   const [isHoveringPoint, setIsHoveringPoint] = useState(false);
 
-  const { segments, points } = graphState.graph;
+  const { graph } = graphState;
+  const { points } = graph;
 
   const onMouseEnterPoint = useCallback(() => setIsHoveringPoint(true), []);
   const onMouseLeavePoint = useCallback(() => setIsHoveringPoint(false), []);
+
+  const world = useMemo(() => new World(graph), [graph]);
 
   return (
     <div
@@ -66,13 +69,9 @@ export const App = () => {
         onWheel={onWheelCanvas}
       >
         <Layer>
-          {segments.map((segment) => (
-            <DrawSegment key={segment.key()} segment={segment} />
-          ))}
-
           {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
 
-          <DrawWorld world={new World(graphState.graph)} />
+          <DrawWorld world={world} />
 
           {points.map((point, index) => (
             <DrawPoint
