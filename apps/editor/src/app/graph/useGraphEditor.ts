@@ -21,11 +21,7 @@ export const useGraphEditor = ({
 
       graphState.addOrSelectPoint(position);
     },
-    [
-      graphState.addOrSelectPoint,
-      graphState.unselectIfExistElseRemoveHoveredPoint,
-      viewport.getMousePositionOnViewport,
-    ],
+    [graphState, viewport],
   );
 
   const onContextMenuCanvas: NonNullable<KonvaNodeEvents['onContextMenu']> =
@@ -40,11 +36,7 @@ export const useGraphEditor = ({
         graphState.hoverNearestPointIfClose(position);
         viewport.setMousePosition(position);
       },
-      [
-        graphState.hoverNearestPointIfClose,
-        viewport.setMousePosition,
-        viewport.getMousePositionOnViewport,
-      ],
+      [graphState, viewport],
     );
 
   const onWheelCanvas: NonNullable<KonvaNodeEvents['onWheel']> = useCallback(
@@ -52,7 +44,7 @@ export const useGraphEditor = ({
       const direction = Math.sign(evt.deltaY);
       viewport.setZoom(viewport.zoom + direction);
     },
-    [viewport.zoom, viewport.setZoom],
+    [viewport],
   );
 
   const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
@@ -60,14 +52,14 @@ export const useGraphEditor = ({
       ({ target }) => {
         graphState.moveDraggingPoint(new Point(target.x(), target.y()));
       },
-      [graphState.moveDraggingPoint],
+      [graphState],
     );
 
   const onDragEndPoint: NonNullable<KonvaNodeEvents['onDragEnd']> = useCallback(
     ({ evt, target }) => {
       graphState.dropDraggingPoint(new Point(target.x(), target.y()));
     },
-    [graphState.dropDraggingPoint],
+    [graphState],
   );
 
   const creatingSegment = useMemo(
@@ -78,7 +70,7 @@ export const useGraphEditor = ({
         graphState.selectedPoint,
         graphState.hoveredPoint ?? viewport.mousePosition,
       ),
-    [graphState.selectedPoint, graphState.hoveredPoint, viewport.mousePosition],
+    [graphState, viewport],
   );
 
   return {

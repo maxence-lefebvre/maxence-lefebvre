@@ -15,6 +15,11 @@
         "{workspaceRoot}/eslint.config.js"
       ]
     },
+    "@nx/eslint:lint": {
+      "options": {
+        "maxWarnings": 0
+      }
+    },
     "e2e": {
       "cache": true,
       "inputs": ["default", "^production"]
