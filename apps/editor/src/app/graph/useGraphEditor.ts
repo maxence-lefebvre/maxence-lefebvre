@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Point, Segment } from '@feyroads/math/graph';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
-import { GraphState, Viewport } from './types';
+import { GraphEditor, GraphState, Viewport } from './types';
 
 export const useGraphEditor = ({
   graphState,
@@ -9,7 +9,7 @@ export const useGraphEditor = ({
 }: {
   graphState: GraphState;
   viewport: Viewport;
-}) => {
+}): GraphEditor => {
   const onClickCanvas: NonNullable<KonvaNodeEvents['onClick']> = useCallback(
     ({ evt }) => {
       if (evt.button === 2) {
@@ -56,7 +56,7 @@ export const useGraphEditor = ({
     );
 
   const onDragEndPoint: NonNullable<KonvaNodeEvents['onDragEnd']> = useCallback(
-    ({ evt, target }) => {
+    ({ target }) => {
       graphState.dropDraggingPoint(new Point(target.x(), target.y()));
     },
     [graphState],
