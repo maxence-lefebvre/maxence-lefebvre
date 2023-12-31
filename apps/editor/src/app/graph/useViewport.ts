@@ -17,7 +17,7 @@ export const useViewport = () => {
   const getMousePositionOnViewport = useCallback(
     (evt: MouseEvent) =>
       new Point(evt.offsetX, evt.offsetY).substract(origin).scale(zoom),
-    [origin, zoom]
+    [origin, zoom],
   );
 
   return {

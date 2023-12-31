@@ -13,7 +13,7 @@ export class PointSearcher {
         const dist = referencePoint.distanceTo(point);
         return dist < minDist ? [point, dist] : [nearest, minDist];
       },
-      [firstPoint, referencePoint.distanceTo(firstPoint)]
+      [firstPoint, referencePoint.distanceTo(firstPoint)],
     );
 
     return nearestPoint;

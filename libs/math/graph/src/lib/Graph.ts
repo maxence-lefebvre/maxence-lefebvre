@@ -1,11 +1,10 @@
 import { Segment } from './primitives/Segment';
 import { Point } from './primitives/Point';
-import invariant from 'invariant';
 
 export class Graph {
   public constructor(
     public readonly points: Point[] = [],
-    public readonly segments: Segment[] = []
+    public readonly segments: Segment[] = [],
   ) {}
 
   public static hydrate(data: string) {
@@ -28,7 +27,7 @@ export class Graph {
 
   public removePoint(removedPoint: Point): Graph {
     const nextPoints = this.points.filter(
-      (point) => !point.equals(removedPoint)
+      (point) => !point.equals(removedPoint),
     );
 
     if (nextPoints.length === this.points.length) {
@@ -37,7 +36,7 @@ export class Graph {
     }
 
     const nextSegments = this.segments.filter(
-      (segment) => !segment.includes(removedPoint)
+      (segment) => !segment.includes(removedPoint),
     );
 
     return new Graph(nextPoints, nextSegments);
@@ -45,15 +44,15 @@ export class Graph {
 
   public replacePoint(previousPoint: Point, nextPoint: Point): Graph {
     const nextPoints = this.points.map((point) =>
-      point.equals(previousPoint) ? nextPoint : point
+      point.equals(previousPoint) ? nextPoint : point,
     );
     const nextSegments = this.segments.map((segment) =>
       segment.includes(previousPoint)
         ? new Segment(
             nextPoint,
-            segment.p1.equals(previousPoint) ? segment.p2 : segment.p1
+            segment.p1.equals(previousPoint) ? segment.p2 : segment.p1,
           )
-        : segment
+        : segment,
     );
 
     return new Graph(nextPoints, nextSegments);

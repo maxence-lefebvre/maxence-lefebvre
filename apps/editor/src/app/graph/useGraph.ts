@@ -46,7 +46,7 @@ export const useGraph = () => {
         point.distanceTo(nearestPoint) <= SELECT_NEAREST_IF_DISTANCE_IS_LTE;
       setHoveredPoint(isCloseEnough ? nearestPoint : null);
     },
-    [graph]
+    [graph],
   );
 
   const unselectIfExistElseRemoveHoveredPoint = useCallback(() => {
@@ -65,12 +65,12 @@ export const useGraph = () => {
     (end: Point) => {
       if (selectedPoint) {
         setGraph((prev) =>
-          prev.addSegmentIfNotExist(new Segment(selectedPoint, end))
+          prev.addSegmentIfNotExist(new Segment(selectedPoint, end)),
         );
       }
       setSelectedPoint(end);
     },
-    [selectedPoint]
+    [selectedPoint],
   );
 
   const addOrSelectPoint = useCallback(
@@ -83,7 +83,7 @@ export const useGraph = () => {
       selectAndConnectSegmentWithSelection(point);
       setHoveredPoint(point);
     },
-    [hoveredPoint, selectAndConnectSegmentWithSelection]
+    [hoveredPoint, selectAndConnectSegmentWithSelection],
   );
 
   const startDraggingPoint = useCallback(() => {
@@ -107,10 +107,10 @@ export const useGraph = () => {
       });
 
       setSelectedPoint((prev) =>
-        draggedPoint && prev?.equals(draggedPoint) ? newPosition : prev
+        draggedPoint && prev?.equals(draggedPoint) ? newPosition : prev,
       );
     },
-    [graph]
+    [graph],
   );
 
   const dropDraggingPoint = useCallback((newPosition: Point) => {

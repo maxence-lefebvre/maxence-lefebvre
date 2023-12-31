@@ -1,7 +1,10 @@
 import { Point } from './Point';
 
 export class Segment {
-  constructor(public readonly p1: Point, public readonly p2: Point) {}
+  constructor(
+    public readonly p1: Point,
+    public readonly p2: Point,
+  ) {}
 
   includes(point: Point) {
     return this.p1.equals(point) || this.p2.equals(point);
