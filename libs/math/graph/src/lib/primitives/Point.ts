@@ -33,4 +33,12 @@ export class Point {
   public static from({ x, y }: { x: number; y: number }) {
     return new Point(x, y);
   }
+
+  public translate(angle: number, offset: number) {
+    return this.add(new Point(Math.cos(angle), Math.sin(angle)).scale(offset));
+  }
+
+  public angle() {
+    return Math.atan2(this.y, this.x);
+  }
 }

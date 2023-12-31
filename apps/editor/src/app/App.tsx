@@ -6,7 +6,7 @@ import { useGraphEditor } from './graph/useGraphEditor';
 import { useCallback, useState } from 'react';
 import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react';
 import { DrawPolygon } from './graph/DrawPolygon';
-import { Polygon } from '@feyroads/math/graph';
+import { Envelope } from '@feyroads/math/graph';
 
 export const App = () => {
   const {
@@ -74,7 +74,15 @@ export const App = () => {
           {segments.map((segment) => (
             <DrawSegment key={segment.key()} segment={segment} />
           ))}
+
           {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
+
+          <DrawPolygon
+            polygon={
+              new Envelope(segments[0], { width: 80, roundness: 20 }).polygon
+            }
+          />
+
           {points.map((point, index) => (
             <DrawPoint
               key={index}
@@ -89,7 +97,6 @@ export const App = () => {
               onMouseLeave={onMouseLeavePoint}
             />
           ))}
-          <DrawPolygon polygon={new Polygon(points)} />
         </Layer>
       </Stage>
       <div

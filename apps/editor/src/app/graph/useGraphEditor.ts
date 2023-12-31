@@ -84,7 +84,7 @@ export const useGraphEditor = () => {
         }
         setOrigin(new Point(target.x(), target.y()));
       },
-      [graph, setOrigin, isStageDraggable],
+      [setOrigin, isStageDraggable],
     );
 
   const onDragMovePoint: NonNullable<KonvaNodeEvents['onDragMove']> =
