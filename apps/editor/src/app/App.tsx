@@ -5,6 +5,8 @@ import { DrawSegment } from './graph/DrawSegment';
 import { useGraphEditor } from './graph/useGraphEditor';
 import { useCallback, useState } from 'react';
 import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react';
+import { DrawPolygon } from './graph/DrawPolygon';
+import { Polygon } from '@feyroads/math/graph';
 
 export const App = () => {
   const {
@@ -87,6 +89,7 @@ export const App = () => {
               onMouseLeave={onMouseLeavePoint}
             />
           ))}
+          <DrawPolygon polygon={new Polygon(points)} />
         </Layer>
       </Stage>
       <div

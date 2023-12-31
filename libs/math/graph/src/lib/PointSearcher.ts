@@ -1,4 +1,4 @@
-import { Point } from './primitives/Point';
+import { Point } from './primitives';
 import { Graph } from './Graph';
 import invariant from 'invariant';
 
