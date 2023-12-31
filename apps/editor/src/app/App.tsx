@@ -62,16 +62,17 @@ export const App = () => {
               cursor: move;
             `,
         ]}
+        onDragEnd={viewport.onDragEndCanvas}
         onClick={onClickCanvas}
         onContextMenu={onContextMenuCanvas}
-        onDragEnd={viewport.onDragEndCanvas}
         onMouseMove={onMouseMoveCanvas}
         onWheel={onWheelCanvas}
       >
         <Layer>
-          {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
-
           <DrawWorld world={world} />
+        </Layer>
+        <Layer>
+          {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
 
           {points.map((point, index) => (
             <DrawPoint

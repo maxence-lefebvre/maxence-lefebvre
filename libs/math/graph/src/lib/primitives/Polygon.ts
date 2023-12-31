@@ -15,6 +15,24 @@ export class Polygon {
     }
   }
 
+  public static union(polygons: Polygon[]) {
+    const segments: Segment[] = [];
+
+    polygons.forEach((polygon, i) => {
+      polygon.segments.forEach((segment) => {
+        if (
+          !polygons.some(
+            (polygonB, j) => i !== j && polygonB.containsSegment(segment),
+          )
+        ) {
+          segments.push(segment);
+        }
+      });
+    });
+
+    return segments;
+  }
+
   public static breakSegmentsAtIntersectionsForAll(polys: Polygon[]) {
     const polygons = clone(polys);
 
@@ -80,5 +98,24 @@ export class Polygon {
       new Polygon(polygonA.points, segmentsA),
       new Polygon(polygonB.points, segmentsB),
     ];
+  }
+
+  public containsSegment(segment: Segment) {
+    return this.containsPoint(segment.midpoint());
+  }
+
+  public containsPoint(point: Point) {
+    const outerPoint = new Point(-1000, -1000);
+
+    let intersectionCount = 0;
+
+    this.segments.forEach((segment) => {
+      const intersection = new Segment(outerPoint, point).intersect(segment);
+      if (intersection) {
+        intersectionCount++;
+      }
+    });
+
+    return intersectionCount % 2 === 1;
   }
 }

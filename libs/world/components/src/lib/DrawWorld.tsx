@@ -13,18 +13,26 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
         <DrawEnvelope
           key={index}
           envelope={envelope}
-          fill="rgba(0,0,255,.3)"
-          stroke="blue"
+          fill="#BBB"
+          stroke="#BBB"
           strokeWidth={15}
         />
       ))}
-      {world.graph.segments.map((segment, index) => (
+      {world.graph.segments.map((segment) => (
         <DrawSegment
           key={segment.key()}
           dash={[10, 10]}
           width={4}
           stroke="white"
           segment={segment}
+        />
+      ))}
+      {world.roadBorders.map((segment) => (
+        <DrawSegment
+          key={segment.key()}
+          segment={segment}
+          stroke="white"
+          width={4}
         />
       ))}
     </Fragment>

@@ -58,4 +58,8 @@ export class Segment {
       offset: t,
     };
   }
+
+  public midpoint() {
+    return this.p1.add(this.p2).scale(1 / 2);
+  }
 }

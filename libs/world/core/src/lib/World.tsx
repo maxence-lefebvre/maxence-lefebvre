@@ -1,4 +1,4 @@
-import { Envelope, Graph } from '@feyroads/math/graph';
+import { Envelope, Graph, Polygon, Segment } from '@feyroads/math/graph';
 import { defaultsDeep } from 'lodash';
 
 export type WorldGraphicOptions = {
@@ -11,12 +11,13 @@ export type WorldGraphicOptions = {
 export const defaultWorldGraphicOptions = {
   roads: {
     width: 100,
-    roundness: 3,
+    roundness: 10,
   },
 };
 
 export class World {
   public readonly envelopes: Envelope[] = [];
+  public readonly roadBorders: Segment[] = [];
 
   private readonly graphicOptions: WorldGraphicOptions;
 
@@ -29,9 +30,13 @@ export class World {
       defaultWorldGraphicOptions,
     );
 
-    this.envelopes = Envelope.breakPolygonsSegmentsAtIntersectionsForAll(
-      this.graph.segments.map(
-        (segment) => new Envelope(segment, this.graphicOptions.roads),
+    this.envelopes = this.graph.segments.map(
+      (segment) => new Envelope(segment, this.graphicOptions.roads),
+    );
+
+    this.roadBorders = Polygon.union(
+      Polygon.breakSegmentsAtIntersectionsForAll(
+        this.envelopes.map(({ polygon }) => polygon),
       ),
     );
   }
