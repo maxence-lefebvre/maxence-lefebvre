@@ -30,6 +30,14 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          lodash: ['lodash'],
+          konva: ['konva', 'react-konva'],
+        },
+      },
+    },
   },
 
   test: {
