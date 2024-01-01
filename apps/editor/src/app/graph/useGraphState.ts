@@ -1,6 +1,7 @@
 import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
 import { useCallback, useState } from 'react';
 import { GraphState } from './types';
+import { usePersistableState } from '@feyroads/ext/react/hooks';
 
 const SELECT_NEAREST_IF_DISTANCE_IS_LTE = 20;
 const STORAGE_KEY = 'feyroads::useGraph::graph';
@@ -9,25 +10,22 @@ const STORAGE_KEY = 'feyroads::useGraph::graph';
 const initialPoints = [new Point(300, 300)];
 const initialSegments: Segment[] = [];
 
-const storedState = localStorage.getItem(STORAGE_KEY);
-
 export const useGraphState = (): GraphState => {
   const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
 
-  const [graph, setGraph] = useState<Graph>(() => {
-    return storedState
-      ? Graph.hydrate(storedState)
-      : new Graph(initialPoints, initialSegments);
-  });
-
-  const saveGraph = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, graph.dehydrate());
-  }, [graph]);
+  const [graph, setGraph, persistGraph] = usePersistableState<Graph>(
+    STORAGE_KEY,
+    new Graph(initialPoints, initialSegments),
+    {
+      serialize: (g) => g.dehydrate(),
+      deserialize: (s) => Graph.hydrate(s),
+    },
+  );
 
   const disposeGraph = useCallback(() => {
     setGraph(new Graph(initialPoints, initialSegments));
-  }, []);
+  }, [setGraph]);
 
   const hoverNearestPointIfClose = useCallback(
     (point: Point) => {
@@ -49,7 +47,7 @@ export const useGraphState = (): GraphState => {
       setHoveredPoint(null);
       return;
     }
-  }, [hoveredPoint, selectedPoint]);
+  }, [hoveredPoint, setGraph, selectedPoint]);
 
   const selectAndConnectSegmentWithSelection = useCallback(
     (end: Point) => {
@@ -60,7 +58,7 @@ export const useGraphState = (): GraphState => {
       }
       setSelectedPoint(end);
     },
-    [selectedPoint],
+    [selectedPoint, setGraph],
   );
 
   const addOrSelectPoint = useCallback(
@@ -73,7 +71,7 @@ export const useGraphState = (): GraphState => {
       selectAndConnectSegmentWithSelection(point);
       setHoveredPoint(point);
     },
-    [hoveredPoint, selectAndConnectSegmentWithSelection],
+    [hoveredPoint, selectAndConnectSegmentWithSelection, setGraph],
   );
 
   const startDraggingPoint = useCallback(() => {
@@ -83,7 +81,7 @@ export const useGraphState = (): GraphState => {
 
       setGraph((prev) => prev.replacePoint(hoveredPoint, draggedPoint));
     }
-  }, [hoveredPoint]);
+  }, [hoveredPoint, setGraph]);
 
   const moveDraggingPoint = useCallback(
     (newPosition: Point) => {
@@ -100,19 +98,24 @@ export const useGraphState = (): GraphState => {
         draggedPoint && prev?.equals(draggedPoint) ? newPosition : prev,
       );
     },
-    [graph],
+    [graph, setGraph],
   );
 
-  const dropDraggingPoint = useCallback((newPosition: Point) => {
-    setGraph((prev) => {
-      const draggedPoint = prev.points.find((point) => point.isDragging);
-      return draggedPoint ? prev.replacePoint(draggedPoint, newPosition) : prev;
-    });
-  }, []);
+  const dropDraggingPoint = useCallback(
+    (newPosition: Point) => {
+      setGraph((prev) => {
+        const draggedPoint = prev.points.find((point) => point.isDragging);
+        return draggedPoint
+          ? prev.replacePoint(draggedPoint, newPosition)
+          : prev;
+      });
+    },
+    [setGraph],
+  );
 
   return {
     graph,
-    saveGraph,
+    saveGraph: persistGraph,
     disposeGraph,
     selectedPoint,
     addOrSelectPoint,

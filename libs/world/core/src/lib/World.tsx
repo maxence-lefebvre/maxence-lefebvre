@@ -166,7 +166,10 @@ export class World {
       const baseA = bases[i].polygon;
       for (let j = i + 1; j < bases.length; j++) {
         const baseB = bases[j].polygon;
-        if (baseA.intersects(baseB)) {
+        if (
+          baseA.intersects(baseB) ||
+          baseA.distanceTo(baseB) <= buildingSpacing - 0.001
+        ) {
           bases.splice(j, 1);
           j--;
         }
@@ -234,19 +237,25 @@ export class World {
       trees: { size: treeSize },
     } = this.graphicOptions;
 
+    const spacing = 40;
+
     // Don't keep the tree if it is inside or nearby a building or a road
     if (
       worldPolygons.some(
         (polygon) =>
           polygon.containsPoint(tree) ||
-          polygon.distanceToPoint(tree) < treeSize / 2,
+          polygon.distanceToPoint(tree) < treeSize / 2 + spacing,
       )
     ) {
       return false;
     }
 
     // Trees shouldn't overlap
-    if (otherTrees.some((otherTree) => otherTree.distanceTo(tree) < treeSize)) {
+    if (
+      otherTrees.some(
+        (otherTree) => otherTree.distanceTo(tree) < treeSize + spacing,
+      )
+    ) {
       return false;
     }
 

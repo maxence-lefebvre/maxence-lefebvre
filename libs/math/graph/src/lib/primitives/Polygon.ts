@@ -134,4 +134,10 @@ export class Polygon {
       ...this.segments.map((segment) => segment.distanceToPoint(point)),
     );
   }
+
+  distanceTo(polygon: Polygon) {
+    return Math.min(
+      ...this.points.map((point) => polygon.distanceToPoint(point)),
+    );
+  }
 }

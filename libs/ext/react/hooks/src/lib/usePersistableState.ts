@@ -4,6 +4,7 @@ import {
   useCallback,
   useState,
 } from 'react';
+import { useKeyboard } from './useKeyboard';
 
 export const usePersistableState = <T>(
   key: string,
@@ -26,6 +27,8 @@ export const usePersistableState = <T>(
   const persist = useCallback(() => {
     localStorage.setItem(key, serialize(value));
   }, [value, key, serialize]);
+
+  useKeyboard('ctrl+s', persist);
 
   return [value, setValue, persist];
 };
