@@ -1,3 +1,5 @@
+import { linearInterpolation } from '@feyroads/math/core';
+
 export class Point {
   public isDragging = false;
 
@@ -52,5 +54,12 @@ export class Point {
 
   public magnitude() {
     return Math.hypot(this.x, this.y);
+  }
+
+  public linearInterpolation(point: Point, t: number) {
+    return new Point(
+      linearInterpolation(this.x, point.x, t),
+      linearInterpolation(this.y, point.y, t),
+    );
   }
 }

@@ -1,8 +1,7 @@
 import { Fragment, memo, useMemo } from 'react';
 import { Tree } from '@feyroads/world/core';
-import { DrawPoint, DrawSegment } from '@feyroads/math/components';
+import { DrawPolygon } from '@feyroads/math/components';
 import { Viewport } from '@feyroads/editor/viewport/components';
-import { Segment } from '@feyroads/math/graph';
 
 export type DrawTreeProps = {
   tree: Tree;
@@ -13,29 +12,23 @@ export const DrawTree = memo(function DrawTree({
   tree,
   viewport: { center: viewportCenter },
 }: DrawTreeProps) {
-  const {
-    center: treeCenter,
-    graphicOptions: { heightCoefficient, size: treeSize },
-  } = tree;
-
-  const topSegment = useMemo(() => {
-    return new Segment(
-      treeCenter,
-      treeCenter.add(
-        treeCenter.substract(viewportCenter).scale(heightCoefficient),
-      ),
-    );
-  }, [treeCenter, viewportCenter, heightCoefficient]);
+  const levels = useMemo(
+    () => tree.getTreeLevels(viewportCenter),
+    [tree, viewportCenter],
+  );
 
   return (
     <Fragment>
-      <DrawPoint
-        point={treeCenter}
-        fill="rgba(0,255, 0, .8)"
-        stroke="rgba(0,255, 0, .8)"
-        width={treeSize}
-      />
-      <DrawSegment segment={topSegment} />
+      {levels.map(({ color, polygon }) => {
+        return (
+          <DrawPolygon
+            polygon={polygon}
+            key={polygon.hash()}
+            fill={color}
+            stroke="transparent"
+          />
+        );
+      })}
     </Fragment>
   );
 });

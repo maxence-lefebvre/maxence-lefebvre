@@ -4,6 +4,7 @@ import { Layer } from 'react-konva';
 import {
   DrawEnvelope,
   DrawPoint,
+  DrawPolygon,
   DrawSegment,
 } from '@feyroads/math/components';
 import { Viewport } from '@feyroads/editor/viewport/components';
@@ -23,7 +24,7 @@ export const DrawDebug = memo(function DrawDebug({
     return null;
   }
 
-  const { debug } = world;
+  const { debug, trees } = world;
 
   return (
     <Layer opacity={0.6}>
@@ -57,6 +58,13 @@ export const DrawDebug = memo(function DrawDebug({
           key={index}
           fill="rgba(255,255, 0,.5)"
           stroke="transparent"
+        />
+      ))}
+      {trees.map((tree) => (
+        <DrawPolygon
+          polygon={tree.base.polygon}
+          key={tree.hash()}
+          fill="rgba(0,255,0,.5)"
         />
       ))}
       <DrawPoint point={viewport.center} width={40} fill="red" />

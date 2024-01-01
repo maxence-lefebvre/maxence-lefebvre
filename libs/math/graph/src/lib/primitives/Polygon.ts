@@ -140,4 +140,8 @@ export class Polygon {
       ...this.points.map((point) => polygon.distanceToPoint(point)),
     );
   }
+
+  hash() {
+    return JSON.stringify(this);
+  }
 }
