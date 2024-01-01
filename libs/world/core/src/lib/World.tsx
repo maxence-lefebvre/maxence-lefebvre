@@ -26,8 +26,10 @@ export const defaultWorldGraphicOptions = {
 };
 
 export type WorldDebug = {
-  thickEnvelopes: Envelope[];
-  guides: Segment[];
+  roadsThickEnvelopes: Envelope[];
+  buildingGuides: Segment[];
+  buildingSupports: Segment[];
+  buildingBases: Envelope[];
 };
 
 export type Roads = {
@@ -46,8 +48,10 @@ export class World {
   };
 
   public debug: WorldDebug = {
-    thickEnvelopes: [],
-    guides: [],
+    roadsThickEnvelopes: [],
+    buildingGuides: [],
+    buildingSupports: [],
+    buildingBases: [],
   };
 
   private readonly graphicOptions: WorldGraphicOptions;
@@ -80,27 +84,84 @@ export class World {
 
   generateBuildings() {
     // First generate bigger envelopes around the roads middle segments
-    const thickEnvelopeWidth =
-      this.graphicOptions.roads.width +
-      this.graphicOptions.buildings.width +
-      2 * this.graphicOptions.buildings.spacing;
+    const {
+      spacing: buildingSpacing,
+      width: buildingWidth,
+      minLength: buildingMinLength,
+    } = this.graphicOptions.buildings;
+
+    const { width: roadWidth, roundness: roadRoundness } =
+      this.graphicOptions.roads;
+
+    const thickEnvelopeWidth = roadWidth + buildingWidth + 2 * buildingSpacing;
 
     const thickEnvelopes = this.graph.segments.map(
       (segment) =>
         new Envelope(segment, {
           width: thickEnvelopeWidth,
-          roundness: this.graphicOptions.roads.roundness,
+          roundness: roadRoundness,
         }),
     );
-    this.debug.thickEnvelopes = thickEnvelopes;
+    this.debug.roadsThickEnvelopes = thickEnvelopes;
 
     const guides = Polygon.union(
       Polygon.breakSegmentsAtIntersectionsForAll(
         thickEnvelopes.map(({ polygon }) => polygon),
       ),
-    );
-    this.debug.guides = guides;
+    ).filter((guide) => guide.length() >= buildingMinLength);
+    this.debug.buildingGuides = guides;
 
-    return [];
+    const supports = guides.flatMap((guide) => {
+      const supportLength = guide.length() + buildingSpacing;
+
+      const buildingMinLengthPlusSpacing = buildingMinLength + buildingSpacing;
+
+      const buildingCount = Math.floor(
+        supportLength / buildingMinLengthPlusSpacing,
+      );
+
+      const buildingLength = supportLength / buildingCount - buildingSpacing;
+
+      const buildingVector = guide.directionVector().scale(buildingLength);
+      const buildingPlusSpacingVector = buildingVector.add(
+        guide.directionVector().scale(buildingSpacing),
+      );
+
+      const buildingSupports: Segment[] = [];
+
+      for (let i = 0; i < buildingCount; i++) {
+        buildingSupports.push(
+          new Segment(
+            guide.p1.add(buildingPlusSpacingVector.scale(i)),
+            guide.p1.add(
+              buildingVector.add(buildingPlusSpacingVector.scale(i)),
+            ),
+          ),
+        );
+      }
+
+      return buildingSupports;
+    });
+
+    this.debug.buildingSupports = supports;
+
+    const bases = supports.map(
+      (support) => new Envelope(support, { width: buildingWidth }),
+    );
+
+    for (let i = 0; i < bases.length - 1; i++) {
+      const baseA = bases[i].polygon;
+      for (let j = i + 1; j < bases.length; j++) {
+        const baseB = bases[j].polygon;
+        if (baseA.intersects(baseB)) {
+          bases.splice(j, 1);
+          j--;
+        }
+      }
+    }
+
+    this.debug.buildingBases = bases;
+
+    return bases;
   }
 }

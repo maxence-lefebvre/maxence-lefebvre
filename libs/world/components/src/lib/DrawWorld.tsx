@@ -36,7 +36,12 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
         />
       ))}
       {world.buildings.map((building, index) => (
-        <DrawEnvelope key={index} envelope={building} />
+        <DrawEnvelope
+          key={index}
+          envelope={building}
+          fill="brown"
+          stroke="brown"
+        />
       ))}
     </Fragment>
   );

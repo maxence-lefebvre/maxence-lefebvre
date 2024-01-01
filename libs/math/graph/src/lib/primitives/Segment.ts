@@ -39,7 +39,9 @@ export class Segment {
     const uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y);
     const bottom = (D.y - C.y) * (B.x - A.x) - (D.x - C.x) * (B.y - A.y);
 
-    if (bottom === 0) {
+    // unfortunately, with floating number, it could be almost 0, so we compare with a little value
+    const epsilon = 0.001;
+    if (Math.abs(bottom) < epsilon) {
       return null;
     }
 
@@ -61,5 +63,13 @@ export class Segment {
 
   public midpoint() {
     return this.p1.add(this.p2).scale(1 / 2);
+  }
+
+  public length() {
+    return this.p1.distanceTo(this.p2);
+  }
+
+  public directionVector() {
+    return this.p2.substract(this.p1).normalize();
   }
 }

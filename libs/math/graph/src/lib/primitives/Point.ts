@@ -41,4 +41,12 @@ export class Point {
   public angle() {
     return Math.atan2(this.y, this.x);
   }
+
+  public normalize() {
+    return this.scale(1 / this.magnitude());
+  }
+
+  public magnitude() {
+    return Math.hypot(this.x, this.y);
+  }
 }
