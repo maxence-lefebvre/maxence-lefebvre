@@ -65,4 +65,8 @@ export class Graph {
 
     return new Graph(this.points, [...this.segments, nextSegment]);
   }
+
+  public hash() {
+    return JSON.stringify(this);
+  }
 }

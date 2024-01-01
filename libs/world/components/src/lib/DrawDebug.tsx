@@ -1,11 +1,7 @@
 import { memo } from 'react';
 import { World } from '@feyroads/world/core';
 import { Layer } from 'react-konva';
-import {
-  DrawEnvelope,
-  DrawPolygon,
-  DrawSegment,
-} from '@feyroads/math/components';
+import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
 
 export type DrawDebugProps = {
   enabled?: boolean;
@@ -35,7 +31,7 @@ export const DrawDebug = memo(function DrawDebug({
       {debug.buildingGuides.map((guide) => (
         <DrawSegment
           segment={guide}
-          key={guide.key()}
+          key={guide.hash()}
           stroke="rgba(255,0,0,.5)"
           strokeWidth={4}
         />
@@ -43,7 +39,7 @@ export const DrawDebug = memo(function DrawDebug({
       {debug.buildingSupports.map((guide) => (
         <DrawSegment
           segment={guide}
-          key={guide.key()}
+          key={guide.hash()}
           stroke="rgba(255,255, 0,.5)"
           strokeWidth={4}
         />

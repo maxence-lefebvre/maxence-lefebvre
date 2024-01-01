@@ -1,6 +1,10 @@
 import { Fragment, memo } from 'react';
 import { World } from '@feyroads/world/core';
-import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
+import {
+  DrawEnvelope,
+  DrawPoint,
+  DrawSegment,
+} from '@feyroads/math/components';
 
 export type DrawWorldProps = {
   world: World;
@@ -20,7 +24,7 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
       ))}
       {world.roads.medianLines.map((segment) => (
         <DrawSegment
-          key={segment.key()}
+          key={segment.hash()}
           dash={[10, 10]}
           width={4}
           stroke="white"
@@ -29,7 +33,7 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
       ))}
       {world.roads.borders.map((segment) => (
         <DrawSegment
-          key={segment.key()}
+          key={segment.hash()}
           segment={segment}
           stroke="white"
           width={4}
@@ -43,6 +47,17 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
           stroke="brown"
         />
       ))}
+      {world.trees.map((tree) => {
+        return (
+          <DrawPoint
+            point={tree}
+            key={tree.hash()}
+            fill="rgba(0,255, 0, .8)"
+            stroke="rgba(0,255, 0, .8)"
+            width={world.graphicOptions.trees.size}
+          />
+        );
+      })}
     </Fragment>
   );
 });

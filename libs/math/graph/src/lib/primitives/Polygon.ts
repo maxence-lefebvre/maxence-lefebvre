@@ -123,9 +123,15 @@ export class Polygon {
     return intersectionCount % 2 === 1;
   }
 
-  intersects(polygon: Polygon) {
+  public intersects(polygon: Polygon) {
     return this.segments.some((segmentA) =>
       polygon.segments.some((segmentB) => segmentB.intersect(segmentA)),
+    );
+  }
+
+  public distanceToPoint(point: Point) {
+    return Math.min(
+      ...this.segments.map((segment) => segment.distanceToPoint(point)),
     );
   }
 }

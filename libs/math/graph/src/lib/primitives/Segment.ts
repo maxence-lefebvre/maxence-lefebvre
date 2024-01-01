@@ -1,7 +1,5 @@
 import { Point } from './Point';
-
-const linearInterpolation = (a: number, b: number, t: number) =>
-  a + t * (b - a);
+import { linearInterpolation } from '@feyroads/math/core';
 
 export class Segment {
   constructor(
@@ -13,8 +11,8 @@ export class Segment {
     return this.p1.equals(point) || this.p2.equals(point);
   }
 
-  key() {
-    return `${this.p1.key()}---${this.p2.key()}`;
+  hash() {
+    return JSON.stringify(this);
   }
 
   equals(segment: Segment) {
@@ -71,5 +69,26 @@ export class Segment {
 
   public directionVector() {
     return this.p2.substract(this.p1).normalize();
+  }
+
+  public distanceToPoint(point: Point) {
+    const { point: projection, offset } = this.projectPoint(point);
+    return offset > 0 && offset < 1
+      ? point.distanceTo(projection)
+      : /* projection is either p1 or p2 */ Math.min(
+          point.distanceTo(this.p1),
+          point.distanceTo(this.p2),
+        );
+  }
+
+  public projectPoint(point: Point) {
+    const directionVector = this.directionVector();
+    const a = point.substract(this.p1);
+    const scaleFactor = a.dot(directionVector);
+
+    return {
+      point: this.p1.add(directionVector.scale(scaleFactor)),
+      offset: scaleFactor / this.p2.substract(this.p1).magnitude(),
+    };
   }
 }

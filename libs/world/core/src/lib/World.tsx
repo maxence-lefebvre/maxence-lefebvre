@@ -1,5 +1,7 @@
-import { Envelope, Graph, Polygon, Segment } from '@feyroads/math/graph';
+import { Envelope, Graph, Point, Polygon, Segment } from '@feyroads/math/graph';
 import { defaultsDeep } from 'lodash';
+import { linearInterpolation } from '@feyroads/math/core';
+import { LRUCache } from 'lru-cache';
 
 export type WorldGraphicOptions = {
   roads: {
@@ -10,6 +12,9 @@ export type WorldGraphicOptions = {
     width: number;
     minLength: number;
     spacing: number;
+  };
+  trees: {
+    size: number;
   };
 };
 
@@ -23,7 +28,12 @@ export const defaultWorldGraphicOptions = {
     minLength: 150,
     spacing: 50,
   },
+  trees: {
+    size: 160,
+  },
 };
+
+const treesCache = new LRUCache<string, Point[]>({ max: 10 });
 
 export type WorldDebug = {
   roadsThickEnvelopes: Envelope[];
@@ -47,6 +57,8 @@ export class World {
     borders: [],
   };
 
+  public readonly trees: Point[] = [];
+
   public debug: WorldDebug = {
     roadsThickEnvelopes: [],
     buildingGuides: [],
@@ -54,7 +66,7 @@ export class World {
     buildingBases: [],
   };
 
-  private readonly graphicOptions: WorldGraphicOptions;
+  public readonly graphicOptions: WorldGraphicOptions;
 
   public constructor(
     public readonly graph: Graph,
@@ -80,6 +92,7 @@ export class World {
     };
 
     this.buildings = this.generateBuildings();
+    this.trees = this.generateTrees();
   }
 
   generateBuildings() {
@@ -163,5 +176,83 @@ export class World {
     this.debug.buildingBases = bases;
 
     return bases;
+  }
+
+  generateTrees() {
+    const key = this.graph.hash();
+
+    const cachedTrees = treesCache.get(key);
+
+    if (cachedTrees) {
+      return cachedTrees;
+    }
+
+    const trees: Point[] = [];
+
+    const worldPoints = [
+      ...this.roads.borders.flatMap(({ p1, p2 }) => [p1, p2]),
+      ...this.buildings.flatMap(({ polygon }) => polygon.points),
+    ];
+
+    const leftestPoint = Math.min(...worldPoints.map(({ x }) => x));
+    const rightestPoint = Math.max(...worldPoints.map(({ x }) => x));
+    const highestPoint = Math.min(...worldPoints.map(({ y }) => y));
+    const lowestPoint = Math.max(...worldPoints.map(({ y }) => y));
+
+    const worldPolygons = [
+      ...this.buildings.flatMap(({ polygon }) => polygon),
+      ...this.roads.surfaces.flatMap(({ polygon }) => polygon),
+    ];
+
+    // Generate trees until we can't find a right spot after 100 attempts.
+    let treeAttemptCount = 0;
+
+    while (treeAttemptCount <= 100) {
+      const tree = new Point(
+        linearInterpolation(leftestPoint, rightestPoint, Math.random()),
+        linearInterpolation(lowestPoint, highestPoint, Math.random()),
+      );
+
+      if (this.shouldKeepTree(tree, trees, worldPolygons)) {
+        trees.push(tree);
+        treeAttemptCount = 0;
+      }
+      treeAttemptCount++;
+    }
+
+    treesCache.set(key, trees);
+
+    return trees;
+  }
+
+  private shouldKeepTree(
+    tree: Point,
+    otherTrees: Point[],
+    worldPolygons: Polygon[],
+  ) {
+    const {
+      trees: { size: treeSize },
+    } = this.graphicOptions;
+
+    // Don't keep the tree if it is inside or nearby a building or a road
+    if (
+      worldPolygons.some(
+        (polygon) =>
+          polygon.containsPoint(tree) ||
+          polygon.distanceToPoint(tree) < treeSize / 2,
+      )
+    ) {
+      return false;
+    }
+
+    // Trees shouldn't overlap
+    if (otherTrees.some((otherTree) => otherTree.distanceTo(tree) < treeSize)) {
+      return false;
+    }
+
+    // Trees shouldn't grow in the middle of nowhere
+    return worldPolygons.some(
+      (polygon) => polygon.distanceToPoint(tree) < 2 * treeSize,
+    );
   }
 }

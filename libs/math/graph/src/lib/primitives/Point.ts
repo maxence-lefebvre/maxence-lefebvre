@@ -6,8 +6,8 @@ export class Point {
     public readonly y: number,
   ) {}
 
-  key() {
-    return `${this.x}-${this.y}`;
+  hash() {
+    return JSON.stringify(this);
   }
 
   equals(point: Point) {
@@ -24,6 +24,10 @@ export class Point {
 
   substract(point: Point) {
     return new Point(this.x - point.x, this.y - point.y);
+  }
+
+  public dot(point: Point) {
+    return this.x * point.x + this.y * point.y;
   }
 
   scale(factor: number) {
