@@ -2,6 +2,7 @@ import { memo, useCallback } from 'react';
 import { DebugMode, GraphState, Viewport } from './types';
 import { css } from '@emotion/react';
 import { IconDeviceFloppy, IconTool, IconTrash } from '@tabler/icons-react';
+import { useKeyboard } from '@feyroads/ext/react/hooks';
 
 export type GraphControlsProps = {
   graphState: GraphState;
@@ -21,6 +22,8 @@ export const GraphControls = memo(function GraphControls({
     saveGraph();
     saveViewportState();
   }, [saveGraph, saveViewportState]);
+
+  useKeyboard('ctrl+s', onClickSave);
 
   return (
     <div

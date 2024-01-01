@@ -2,30 +2,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { Point } from '@feyroads/math/graph';
 import { GraphState, Viewport } from './types';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
+import { usePersistableState } from '@feyroads/ext/react/hooks';
 
-const STORAGE_KEY = 'feyroads::useViewport::viewport';
-
-type StoredState = {
-  origin: { x: number; y: number };
-  zoom: number;
-};
-
-export const isStoredState = (state: unknown): state is StoredState =>
-  typeof state === 'object' &&
-  !!state &&
-  'zoom' in state &&
-  Number.isFinite(state.zoom) &&
-  'origin' in state &&
-  typeof state.origin === 'object';
-
-const storedStateString = localStorage.getItem(STORAGE_KEY);
-const storedState = storedStateString && JSON.parse(storedStateString);
-const hydratedState = isStoredState(storedState)
-  ? {
-      zoom: storedState.zoom,
-      origin: new Point(storedState.origin.x, storedState.origin.y),
-    }
-  : null;
+const ORIGIN_STORAGE_KEY = 'feyroads::useViewport::origin';
+const ZOOM_STORAGE_KEY = 'feyroads::useViewport::zoom';
 
 export const useViewport = ({
   graphState,
@@ -33,18 +13,36 @@ export const useViewport = ({
   graphState: GraphState;
 }): Viewport => {
   const [mousePosition, setMousePosition] = useState<Point | null>(null);
-  const [origin, setOrigin] = useState(
-    hydratedState?.origin ?? new Point(0, 0),
+  const [origin, setOrigin, persistOrigin] = usePersistableState<Point>(
+    ORIGIN_STORAGE_KEY,
+    new Point(0, 0),
+    {
+      deserialize: (s: string) => {
+        const { x, y } = JSON.parse(s) as { x: number; y: number };
+        return new Point(x, y);
+      },
+    },
   );
-  const [zoom, setZoom] = useState<number>(hydratedState?.zoom ?? 1);
+
+  const [zoom, setZoom, persistZoom] = usePersistableState<number>(
+    ZOOM_STORAGE_KEY,
+    1,
+    {
+      deserialize: (s: string) => +s,
+    },
+  );
 
   const saveViewportState = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ origin, zoom }));
-  }, [origin, zoom]);
+    persistOrigin();
+    persistZoom();
+  }, [persistOrigin, persistZoom]);
 
-  const bindZoom = useCallback((nextZoom: number) => {
-    setZoom(Math.max(1, Math.min(5, nextZoom)));
-  }, []);
+  const bindZoom = useCallback(
+    (nextZoom: number) => {
+      setZoom(Math.max(1, Math.min(5, nextZoom)));
+    },
+    [setZoom],
+  );
 
   const scale = useMemo(() => {
     return new Point(1 / zoom, 1 / zoom);
@@ -69,7 +67,7 @@ export const useViewport = ({
         }
         setOrigin(new Point(target.x(), target.y()));
       },
-      [isStageDraggable],
+      [isStageDraggable, setOrigin],
     );
 
   return {
