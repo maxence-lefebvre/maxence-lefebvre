@@ -1,18 +1,26 @@
-import { memo } from 'react';
-import { DebugMode, GraphState } from './types';
+import { memo, useCallback } from 'react';
+import { DebugMode, GraphState, Viewport } from './types';
 import { css } from '@emotion/react';
 import { IconDeviceFloppy, IconTool, IconTrash } from '@tabler/icons-react';
 
 export type GraphControlsProps = {
   graphState: GraphState;
+  viewport: Viewport;
   debugMode: DebugMode;
 };
 
 export const GraphControls = memo(function GraphControls({
   graphState,
+  viewport,
   debugMode,
 }: GraphControlsProps) {
   const { saveGraph, disposeGraph } = graphState;
+  const { saveViewportState } = viewport;
+
+  const onClickSave = useCallback(() => {
+    saveGraph();
+    saveViewportState();
+  }, [saveGraph, saveViewportState]);
 
   return (
     <div
@@ -21,7 +29,7 @@ export const GraphControls = memo(function GraphControls({
         gap: 20px;
       `}
     >
-      <button onClick={saveGraph} title="Save graph to local storage">
+      <button onClick={onClickSave} title="Save graph to local storage">
         <IconDeviceFloppy />
       </button>
       <button onClick={disposeGraph} title="Reset graph to default">

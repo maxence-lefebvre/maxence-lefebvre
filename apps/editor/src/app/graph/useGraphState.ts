@@ -2,33 +2,22 @@ import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
 import { useCallback, useState } from 'react';
 import { GraphState } from './types';
 
-const initialPoints = [
-  new Point(200, 200),
-  new Point(500, 200),
-  new Point(400, 400),
-  new Point(100, 300),
-];
-
-const [p1, p2, p3, p4] = initialPoints;
-
-const initialSegments = [
-  new Segment(p1, p2),
-  new Segment(p1, p3),
-  new Segment(p1, p4),
-  new Segment(p2, p3),
-];
-
 const SELECT_NEAREST_IF_DISTANCE_IS_LTE = 20;
 const STORAGE_KEY = 'feyroads::useGraph::graph';
+
+// Center of canvas
+const initialPoints = [new Point(300, 300)];
+const initialSegments: Segment[] = [];
+
+const storedState = localStorage.getItem(STORAGE_KEY);
 
 export const useGraphState = (): GraphState => {
   const [selectedPoint, setSelectedPoint] = useState<Point | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
 
   const [graph, setGraph] = useState<Graph>(() => {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data
-      ? Graph.hydrate(data)
+    return storedState
+      ? Graph.hydrate(storedState)
       : new Graph(initialPoints, initialSegments);
   });
 

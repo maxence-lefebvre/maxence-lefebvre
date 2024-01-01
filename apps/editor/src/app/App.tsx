@@ -49,7 +49,11 @@ export const App = () => {
           onMouseLeavePoint={onMouseLeavePoint}
         />
       </Canvas>
-      <GraphControls graphState={graphState} debugMode={debugMode} />
+      <GraphControls
+        graphState={graphState}
+        viewport={viewport}
+        debugMode={debugMode}
+      />
     </AppContainer>
   );
 };

@@ -3,14 +3,44 @@ import { Point } from '@feyroads/math/graph';
 import { GraphState, Viewport } from './types';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
+const STORAGE_KEY = 'feyroads::useViewport::viewport';
+
+type StoredState = {
+  origin: { x: number; y: number };
+  zoom: number;
+};
+
+export const isStoredState = (state: unknown): state is StoredState =>
+  typeof state === 'object' &&
+  !!state &&
+  'zoom' in state &&
+  Number.isFinite(state.zoom) &&
+  'origin' in state &&
+  typeof state.origin === 'object';
+
+const storedStateString = localStorage.getItem(STORAGE_KEY);
+const storedState = storedStateString && JSON.parse(storedStateString);
+const hydratedState = isStoredState(storedState)
+  ? {
+      zoom: storedState.zoom,
+      origin: new Point(storedState.origin.x, storedState.origin.y),
+    }
+  : null;
+
 export const useViewport = ({
   graphState,
 }: {
   graphState: GraphState;
 }): Viewport => {
   const [mousePosition, setMousePosition] = useState<Point | null>(null);
-  const [origin, setOrigin] = useState(new Point(0, 0));
-  const [zoom, setZoom] = useState<number>(1);
+  const [origin, setOrigin] = useState(
+    hydratedState?.origin ?? new Point(0, 0),
+  );
+  const [zoom, setZoom] = useState<number>(hydratedState?.zoom ?? 1);
+
+  const saveViewportState = useCallback(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ origin, zoom }));
+  }, [origin, zoom]);
 
   const bindZoom = useCallback((nextZoom: number) => {
     setZoom(Math.max(1, Math.min(5, nextZoom)));
@@ -48,6 +78,7 @@ export const useViewport = ({
     zoom,
     setZoom: bindZoom,
     scale,
+    saveViewportState,
     mousePosition,
     setMousePosition,
     getMousePositionOnViewport,

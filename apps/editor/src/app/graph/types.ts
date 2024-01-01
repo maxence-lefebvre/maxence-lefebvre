@@ -8,6 +8,7 @@ export type Viewport = {
   zoom: number;
   setZoom: (zoom: number) => void;
   scale: Point;
+  saveViewportState: VoidFunction;
   mousePosition: Point | null;
   setMousePosition: (position: Point | null) => void;
   getMousePositionOnViewport: (evt: MouseEvent) => Point;
