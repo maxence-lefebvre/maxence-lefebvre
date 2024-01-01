@@ -3,12 +3,13 @@ import { Layer } from 'react-konva';
 import { useGraphEditor } from './graph/useGraphEditor';
 import { useViewport } from './graph/useViewport';
 import { useGraphState } from './graph/useGraphState';
-import { DrawWorld } from '@feyroads/world/components';
+import { DrawDebug, DrawWorld } from '@feyroads/world/components';
 import { DrawGraphEditor } from './graph/DrawGraphEditor';
 import { GraphControls } from './graph/GraphControls';
 import { Canvas } from './graph/Canvas';
 import { useCanvasState } from './graph/useCanvasState';
 import { useWorld } from './graph/useWorld';
+import { useBoolState } from '@feyroads/ext/react/hooks';
 
 const AppContainer = styled.div`
   display: flex;
@@ -25,6 +26,7 @@ export const App = () => {
   const world = useWorld({ graphState });
   const { isHoveringPoint, onMouseEnterPoint, onMouseLeavePoint } =
     useCanvasState({ graphState });
+  const { isDebugMode } = useBoolState(true, 'debugMode');
 
   return (
     <AppContainer>
@@ -36,6 +38,7 @@ export const App = () => {
         <Layer>
           <DrawWorld world={world} />
         </Layer>
+        <DrawDebug enabled={isDebugMode} world={world} />
         <DrawGraphEditor
           graphState={graphState}
           graphEditor={graphEditor}

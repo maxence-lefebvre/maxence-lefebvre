@@ -1,20 +1,21 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { GraphState } from './types';
+import { useBoolState } from '@feyroads/ext/react/hooks';
 
 export const useCanvasState = ({ graphState }: { graphState: GraphState }) => {
   const { selectedPoint } = graphState;
 
-  const [isHoveringPoint, setIsHoveringPoint] = useState(false);
+  const { isHoveringPoint, setHoveringPoint, setHoveringPointFalse } =
+    useBoolState(false, 'hoveringPoint');
 
   const onMouseEnterPoint = useCallback(
-    () => setIsHoveringPoint(!selectedPoint),
-    [selectedPoint],
+    () => setHoveringPoint(!selectedPoint),
+    [setHoveringPoint, selectedPoint],
   );
-  const onMouseLeavePoint = useCallback(() => setIsHoveringPoint(false), []);
 
   return {
     isHoveringPoint,
     onMouseEnterPoint,
-    onMouseLeavePoint,
+    onMouseLeavePoint: setHoveringPointFalse,
   };
 };

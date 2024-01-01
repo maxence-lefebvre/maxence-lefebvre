@@ -9,7 +9,7 @@ export type DrawWorldProps = {
 export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
   return (
     <Fragment>
-      {world.envelopes.map((envelope, index) => (
+      {world.roads.surfaces.map((envelope, index) => (
         <DrawEnvelope
           key={index}
           envelope={envelope}
@@ -18,7 +18,7 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
           strokeWidth={15}
         />
       ))}
-      {world.graph.segments.map((segment) => (
+      {world.roads.medianLines.map((segment) => (
         <DrawSegment
           key={segment.key()}
           dash={[10, 10]}
@@ -27,7 +27,7 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
           segment={segment}
         />
       ))}
-      {world.roadBorders.map((segment) => (
+      {world.roads.borders.map((segment) => (
         <DrawSegment
           key={segment.key()}
           segment={segment}
@@ -37,9 +37,6 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
       ))}
       {world.buildings.map((building, index) => (
         <DrawEnvelope key={index} envelope={building} />
-      ))}
-      {world.guides.map((guide) => (
-        <DrawSegment segment={guide} key={guide.key()} />
       ))}
     </Fragment>
   );

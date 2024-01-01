@@ -25,12 +25,30 @@ export const defaultWorldGraphicOptions = {
   },
 };
 
+export type WorldDebug = {
+  thickEnvelopes: Envelope[];
+  guides: Segment[];
+};
+
+export type Roads = {
+  surfaces: Envelope[];
+  medianLines: Segment[];
+  borders: Segment[];
+};
+
 export class World {
-  public readonly envelopes: Envelope[] = [];
-  public readonly roadBorders: Segment[] = [];
   public readonly buildings: Envelope[] = [];
 
-  public guides: Segment[] = [];
+  public readonly roads: Roads = {
+    surfaces: [],
+    medianLines: [],
+    borders: [],
+  };
+
+  public debug: WorldDebug = {
+    thickEnvelopes: [],
+    guides: [],
+  };
 
   private readonly graphicOptions: WorldGraphicOptions;
 
@@ -43,35 +61,46 @@ export class World {
       defaultWorldGraphicOptions,
     );
 
-    this.envelopes = this.graph.segments.map(
+    const roadSurfaces = this.graph.segments.map(
       (segment) => new Envelope(segment, this.graphicOptions.roads),
     );
 
-    this.roadBorders = Polygon.union(
-      Polygon.breakSegmentsAtIntersectionsForAll(
-        this.envelopes.map(({ polygon }) => polygon),
+    this.roads = {
+      surfaces: roadSurfaces,
+      medianLines: this.graph.segments,
+      borders: Polygon.union(
+        Polygon.breakSegmentsAtIntersectionsForAll(
+          roadSurfaces.map(({ polygon }) => polygon),
+        ),
       ),
-    );
+    };
 
     this.buildings = this.generateBuildings();
   }
 
   generateBuildings() {
     // First generate bigger envelopes around the roads middle segments
+    const thickEnvelopeWidth =
+      this.graphicOptions.roads.width +
+      this.graphicOptions.buildings.width +
+      2 * this.graphicOptions.buildings.spacing;
+
     const thickEnvelopes = this.graph.segments.map(
       (segment) =>
         new Envelope(segment, {
-          width:
-            this.graphicOptions.roads.width +
-            this.graphicOptions.buildings.width +
-            2 * this.graphicOptions.buildings.spacing,
+          width: thickEnvelopeWidth,
           roundness: this.graphicOptions.roads.roundness,
         }),
     );
+    this.debug.thickEnvelopes = thickEnvelopes;
 
-    const guides = Polygon.union(thickEnvelopes.map(({ polygon }) => polygon));
-    this.guides = guides;
+    const guides = Polygon.union(
+      Polygon.breakSegmentsAtIntersectionsForAll(
+        thickEnvelopes.map(({ polygon }) => polygon),
+      ),
+    );
+    this.debug.guides = guides;
 
-    return thickEnvelopes;
+    return [];
   }
 }

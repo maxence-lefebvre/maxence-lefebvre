@@ -20,12 +20,16 @@ export class Polygon {
 
     polygons.forEach((polygon, i) => {
       polygon.segments.forEach((segment) => {
+        // FIXME: looks like we keep segments that belong to 3 polygons.
+        // Keep the segment if no other polygons contains that segment
         if (
           !polygons.some(
             (polygonB, j) => i !== j && polygonB.containsSegment(segment),
           )
         ) {
-          segments.push(segment);
+          if (!segments.some((keptSegment) => keptSegment.equals(segment))) {
+            segments.push(segment);
+          }
         }
       });
     });
