@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
 import { Layer } from 'react-konva';
 import { useGraphEditor } from './graph/useGraphEditor';
-import { useViewport } from './graph/useViewport';
-import { useGraphState } from './graph/useGraphState';
 import { DrawDebug, DrawWorld } from '@feyroads/world/components';
 import { DrawGraphEditor } from './graph/DrawGraphEditor';
 import { GraphControls } from './graph/GraphControls';
@@ -10,6 +8,8 @@ import { Canvas } from './graph/Canvas';
 import { useCanvasState } from './graph/useCanvasState';
 import { useWorld } from './graph/useWorld';
 import { useBoolState } from '@feyroads/ext/react/hooks';
+import { useViewport } from '@feyroads/editor/viewport/components';
+import { useGraphState } from '@feyroads/math/components';
 
 const AppContainer = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ export const App = () => {
         isHoveringPoint={isHoveringPoint}
       >
         <Layer>
-          <DrawWorld world={world} />
+          <DrawWorld world={world} viewport={viewport} />
         </Layer>
         <DrawDebug enabled={debugMode.isDebugMode} world={world} />
         <DrawGraphEditor

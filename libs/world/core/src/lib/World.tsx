@@ -2,6 +2,7 @@ import { Envelope, Graph, Point, Polygon, Segment } from '@feyroads/math/graph';
 import { defaultsDeep } from 'lodash';
 import { linearInterpolation } from '@feyroads/math/core';
 import { LRUCache } from 'lru-cache';
+import { Tree } from './objects';
 
 export type WorldGraphicOptions = {
   roads: {
@@ -33,7 +34,7 @@ export const defaultWorldGraphicOptions = {
   },
 };
 
-const treesCache = new LRUCache<string, Point[]>({ max: 10 });
+const treesCache = new LRUCache<string, Tree[]>({ max: 10 });
 
 export type WorldDebug = {
   roadsThickEnvelopes: Envelope[];
@@ -57,7 +58,7 @@ export class World {
     borders: [],
   };
 
-  public readonly trees: Point[] = [];
+  public readonly trees: Tree[] = [];
 
   public debug: WorldDebug = {
     roadsThickEnvelopes: [],
@@ -190,7 +191,7 @@ export class World {
       return cachedTrees;
     }
 
-    const trees: Point[] = [];
+    const trees: Tree[] = [];
 
     const worldPoints = [
       ...this.roads.borders.flatMap(({ p1, p2 }) => [p1, p2]),
@@ -211,10 +212,12 @@ export class World {
     let treeAttemptCount = 0;
 
     while (treeAttemptCount <= 100) {
-      const tree = new Point(
+      const center = new Point(
         linearInterpolation(leftestPoint, rightestPoint, Math.random()),
         linearInterpolation(lowestPoint, highestPoint, Math.random()),
       );
+
+      const tree = new Tree(center);
 
       if (this.shouldKeepTree(tree, trees, worldPolygons)) {
         trees.push(tree);
@@ -229,8 +232,8 @@ export class World {
   }
 
   private shouldKeepTree(
-    tree: Point,
-    otherTrees: Point[],
+    tree: Tree,
+    otherTrees: Tree[],
     worldPolygons: Polygon[],
   ) {
     const {
@@ -243,8 +246,8 @@ export class World {
     if (
       worldPolygons.some(
         (polygon) =>
-          polygon.containsPoint(tree) ||
-          polygon.distanceToPoint(tree) < treeSize / 2 + spacing,
+          polygon.containsPoint(tree.center) ||
+          polygon.distanceToPoint(tree.center) < treeSize / 2 + spacing,
       )
     ) {
       return false;
@@ -253,7 +256,8 @@ export class World {
     // Trees shouldn't overlap
     if (
       otherTrees.some(
-        (otherTree) => otherTree.distanceTo(tree) < treeSize + spacing,
+        (otherTree) =>
+          otherTree.center.distanceTo(tree.center) < treeSize + spacing,
       )
     ) {
       return false;
@@ -261,7 +265,7 @@ export class World {
 
     // Trees shouldn't grow in the middle of nowhere
     return worldPolygons.some(
-      (polygon) => polygon.distanceToPoint(tree) < 2 * treeSize,
+      (polygon) => polygon.distanceToPoint(tree.center) < 2 * treeSize,
     );
   }
 }

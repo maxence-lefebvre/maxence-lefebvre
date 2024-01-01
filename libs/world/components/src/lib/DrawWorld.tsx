@@ -1,16 +1,18 @@
 import { Fragment, memo } from 'react';
 import { World } from '@feyroads/world/core';
-import {
-  DrawEnvelope,
-  DrawPoint,
-  DrawSegment,
-} from '@feyroads/math/components';
+import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
+import { DrawTree } from './DrawTree';
+import { Viewport } from '@feyroads/editor/viewport/components';
 
 export type DrawWorldProps = {
   world: World;
+  viewport: Viewport;
 };
 
-export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
+export const DrawWorld = memo(function DrawWorld({
+  world,
+  viewport,
+}: DrawWorldProps) {
   return (
     <Fragment>
       {world.roads.surfaces.map((envelope, index) => (
@@ -48,15 +50,7 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
         />
       ))}
       {world.trees.map((tree) => {
-        return (
-          <DrawPoint
-            point={tree}
-            key={tree.hash()}
-            fill="rgba(0,255, 0, .8)"
-            stroke="rgba(0,255, 0, .8)"
-            width={world.graphicOptions.trees.size}
-          />
-        );
+        return <DrawTree tree={tree} key={tree.hash()} viewport={viewport} />;
       })}
     </Fragment>
   );

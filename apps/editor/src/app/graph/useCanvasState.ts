@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { GraphState } from './types';
 import { useBoolState } from '@feyroads/ext/react/hooks';
+import { GraphState } from '@feyroads/math/components';
 
 export const useCanvasState = ({ graphState }: { graphState: GraphState }) => {
   const { selectedPoint } = graphState;

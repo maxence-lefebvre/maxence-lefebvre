@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@feyroads/editor/viewport/components": [
+        "libs/editor/viewport/components/src/index.ts"
+      ],
       "@feyroads/ext/array": ["libs/ext/array/src/index.ts"],
       "@feyroads/ext/react/hooks": ["libs/ext/react/hooks/src/index.ts"],
       "@feyroads/math/components": ["libs/math/components/src/index.ts"],

@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { GraphEditor, GraphState } from './types';
-import { DrawPoint, DrawSegment } from '@feyroads/math/components';
+import { GraphEditor } from './types';
+import { DrawPoint, DrawSegment, GraphState } from '@feyroads/math/components';
 import { Layer } from 'react-konva';
 
 export type DrawGraphEditorProps = {

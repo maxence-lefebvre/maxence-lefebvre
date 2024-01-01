@@ -1,12 +1,12 @@
+import { Viewport } from './types';
 import { useCallback, useMemo, useState } from 'react';
 import { Point } from '@feyroads/math/graph';
-import { GraphState, Viewport } from './types';
-import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 import { usePersistableState } from '@feyroads/ext/react/hooks';
+import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
+import { GraphState } from '@feyroads/math/components';
 
 const ORIGIN_STORAGE_KEY = 'feyroads::useViewport::origin';
 const ZOOM_STORAGE_KEY = 'feyroads::useViewport::zoom';
-
 export const useViewport = ({
   graphState,
 }: {

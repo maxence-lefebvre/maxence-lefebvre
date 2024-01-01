@@ -1,7 +1,9 @@
 import { memo, useCallback } from 'react';
-import { DebugMode, GraphState, Viewport } from './types';
+import { DebugMode } from './types';
 import { css } from '@emotion/react';
 import { IconDeviceFloppy, IconTool, IconTrash } from '@tabler/icons-react';
+import { Viewport } from '@feyroads/editor/viewport/components';
+import { GraphState } from '@feyroads/math/components';
 
 export type GraphControlsProps = {
   graphState: GraphState;

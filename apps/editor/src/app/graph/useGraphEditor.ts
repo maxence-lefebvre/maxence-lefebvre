@@ -1,7 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { Point, Segment } from '@feyroads/math/graph';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
-import { GraphEditor, GraphState, Viewport } from './types';
+import { GraphEditor } from './types';
+import { Viewport } from '@feyroads/editor/viewport/components';
+import { GraphState } from '@feyroads/math/components';
 
 export const useGraphEditor = ({
   graphState,

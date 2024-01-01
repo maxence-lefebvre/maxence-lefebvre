@@ -1,7 +1,8 @@
 import { memo, ReactNode } from 'react';
-import { GraphEditor, Viewport } from './types';
+import { GraphEditor } from './types';
 import { css } from '@emotion/react';
 import { Stage } from 'react-konva';
+import { Viewport } from '@feyroads/editor/viewport/components';
 
 export type CanvasProps = {
   viewport: Viewport;
