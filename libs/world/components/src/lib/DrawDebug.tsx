@@ -1,16 +1,23 @@
 import { memo } from 'react';
 import { World } from '@feyroads/world/core';
 import { Layer } from 'react-konva';
-import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
+import {
+  DrawEnvelope,
+  DrawPoint,
+  DrawSegment,
+} from '@feyroads/math/components';
+import { Viewport } from '@feyroads/editor/viewport/components';
 
 export type DrawDebugProps = {
   enabled?: boolean;
   world: World;
+  viewport: Viewport;
 };
 
 export const DrawDebug = memo(function DrawDebug({
   enabled = false,
   world,
+  viewport,
 }: DrawDebugProps) {
   if (!enabled) {
     return null;
@@ -52,6 +59,7 @@ export const DrawDebug = memo(function DrawDebug({
           stroke="transparent"
         />
       ))}
+      <DrawPoint point={viewport.center} width={40} fill="red" />
     </Layer>
   );
 });

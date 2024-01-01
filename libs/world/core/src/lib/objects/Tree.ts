@@ -3,10 +3,12 @@ import { defaultsDeep } from 'lodash';
 
 export type TreeGraphicOptions = {
   size: number;
+  heightCoefficient: number;
 };
 
 export const defaultTreeGraphicOptions = {
   size: 160,
+  heightCoefficient: 0.3,
 };
 
 export class Tree {

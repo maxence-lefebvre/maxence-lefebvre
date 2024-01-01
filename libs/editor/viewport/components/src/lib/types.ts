@@ -3,6 +3,7 @@ import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
 export type Viewport = {
   origin: Point;
+  center: Point;
   setOrigin: (point: Point) => void;
   zoom: number;
   setZoom: (zoom: number) => void;

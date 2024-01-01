@@ -41,7 +41,11 @@ export const App = () => {
         <Layer>
           <DrawWorld world={world} viewport={viewport} />
         </Layer>
-        <DrawDebug enabled={debugMode.isDebugMode} world={world} />
+        <DrawDebug
+          enabled={debugMode.isDebugMode}
+          world={world}
+          viewport={viewport}
+        />
         <DrawGraphEditor
           graphState={graphState}
           graphEditor={graphEditor}

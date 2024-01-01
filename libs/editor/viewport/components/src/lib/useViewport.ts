@@ -32,6 +32,11 @@ export const useViewport = ({
     },
   );
 
+  const center = useMemo(
+    () => new Point(300, 300).substract(origin).scale(zoom),
+    [origin, zoom],
+  );
+
   const saveViewportState = useCallback(() => {
     persistOrigin();
     persistZoom();
@@ -73,6 +78,7 @@ export const useViewport = ({
   return {
     origin,
     setOrigin,
+    center,
     zoom,
     setZoom: bindZoom,
     scale,
