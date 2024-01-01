@@ -1,14 +1,16 @@
 import { memo } from 'react';
-import { GraphState } from './types';
+import { DebugMode, GraphState } from './types';
 import { css } from '@emotion/react';
-import { IconDeviceFloppy, IconTrash } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconTool, IconTrash } from '@tabler/icons-react';
 
 export type GraphControlsProps = {
   graphState: GraphState;
+  debugMode: DebugMode;
 };
 
 export const GraphControls = memo(function GraphControls({
   graphState,
+  debugMode,
 }: GraphControlsProps) {
   const { saveGraph, disposeGraph } = graphState;
 
@@ -19,11 +21,14 @@ export const GraphControls = memo(function GraphControls({
         gap: 20px;
       `}
     >
-      <button onClick={saveGraph}>
+      <button onClick={saveGraph} title="Save graph to local storage">
         <IconDeviceFloppy />
       </button>
-      <button onClick={disposeGraph}>
+      <button onClick={disposeGraph} title="Reset graph to default">
         <IconTrash />
+      </button>
+      <button onClick={debugMode.toggleDebugMode} title="Toggle debug mode">
+        <IconTool />
       </button>
     </div>
   );

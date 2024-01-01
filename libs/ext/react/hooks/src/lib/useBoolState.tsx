@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { type IsStringLiteral } from 'type-fest';
 
-type UseBoolStateValue<TName extends string> =
+export type UseBoolStateValue<TName extends string> =
   IsStringLiteral<TName> extends true
     ? { [key in `is${Capitalize<TName>}`]: boolean } & {
         [key in `set${Capitalize<TName>}`]: Dispatch<SetStateAction<boolean>>;

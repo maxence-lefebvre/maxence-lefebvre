@@ -26,7 +26,10 @@ export const App = () => {
   const world = useWorld({ graphState });
   const { isHoveringPoint, onMouseEnterPoint, onMouseLeavePoint } =
     useCanvasState({ graphState });
-  const { isDebugMode } = useBoolState(true, 'debugMode');
+  const debugMode = useBoolState(
+    window.location.hostname === 'localhost',
+    'debugMode',
+  );
 
   return (
     <AppContainer>
@@ -38,7 +41,7 @@ export const App = () => {
         <Layer>
           <DrawWorld world={world} />
         </Layer>
-        <DrawDebug enabled={isDebugMode} world={world} />
+        <DrawDebug enabled={debugMode.isDebugMode} world={world} />
         <DrawGraphEditor
           graphState={graphState}
           graphEditor={graphEditor}
@@ -46,7 +49,7 @@ export const App = () => {
           onMouseLeavePoint={onMouseLeavePoint}
         />
       </Canvas>
-      <GraphControls graphState={graphState} />
+      <GraphControls graphState={graphState} debugMode={debugMode} />
     </AppContainer>
   );
 };
