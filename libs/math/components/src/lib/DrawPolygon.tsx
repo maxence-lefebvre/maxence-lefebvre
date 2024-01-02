@@ -1,7 +1,8 @@
 import { Polygon } from '@feyroads/math/graph';
+import Konva from 'konva';
+import { forEach } from 'lodash';
 import { ComponentPropsWithoutRef, memo, useCallback } from 'react';
 import { Shape } from 'react-konva';
-import Konva from 'konva';
 
 export type DrawPolygonProps = ComponentPropsWithoutRef<typeof Shape> & {
   polygon: Polygon;
@@ -19,7 +20,7 @@ export const DrawPolygon = memo(function DrawPolygon({
 
       const [startPoint, ...restPoints] = points;
       ctx.moveTo(startPoint.x, startPoint.y);
-      restPoints.forEach(({ x, y }) => ctx.lineTo(x, y));
+      forEach(restPoints, ({ x, y }) => ctx.lineTo(x, y));
 
       ctx.closePath();
       ctx.fillStrokeShape(shape);

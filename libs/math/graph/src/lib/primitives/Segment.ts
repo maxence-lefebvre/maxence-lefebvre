@@ -1,5 +1,6 @@
-import { Point } from './Point';
 import { linearInterpolation } from '@feyroads/math/core';
+
+import { Point } from './Point';
 
 export class Segment {
   constructor(
@@ -7,7 +8,7 @@ export class Segment {
     public readonly p2: Point,
   ) {}
 
-  includes(point: Point) {
+  includesPoint(point: Point) {
     return this.p1.equals(point) || this.p2.equals(point);
   }
 
@@ -16,7 +17,7 @@ export class Segment {
   }
 
   equals(segment: Segment) {
-    return this.includes(segment.p1) && this.includes(segment.p2);
+    return this.includesPoint(segment.p1) && this.includesPoint(segment.p2);
   }
 
   public static from({

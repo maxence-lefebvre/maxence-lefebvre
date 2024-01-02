@@ -1,4 +1,6 @@
-import { Segment, Point } from './primitives';
+import { filter, map, some } from 'lodash';
+
+import { Point, Segment } from './primitives';
 
 export class Graph {
   public constructor(
@@ -8,7 +10,7 @@ export class Graph {
 
   public static hydrate(data: string) {
     const { points = [], segments = [] } = JSON.parse(data);
-    return new Graph(points.map(Point.from), segments.map(Segment.from));
+    return new Graph(map(points, Point.from), map(segments, Segment.from));
   }
 
   public dehydrate() {
@@ -16,7 +18,7 @@ export class Graph {
   }
 
   public addPointIfNotExist(newPoint: Point): Graph {
-    if (this.points.some((point) => point.equals(newPoint))) {
+    if (some(this.points, (point) => point.equals(newPoint))) {
       // Do nothing, point already exists.
       return this;
     }
@@ -25,7 +27,8 @@ export class Graph {
   }
 
   public removePoint(removedPoint: Point): Graph {
-    const nextPoints = this.points.filter(
+    const nextPoints = filter(
+      this.points,
       (point) => !point.equals(removedPoint),
     );
 
@@ -34,19 +37,20 @@ export class Graph {
       return this;
     }
 
-    const nextSegments = this.segments.filter(
-      (segment) => !segment.includes(removedPoint),
+    const nextSegments = filter(
+      this.segments,
+      (segment) => !segment.includesPoint(removedPoint),
     );
 
     return new Graph(nextPoints, nextSegments);
   }
 
   public replacePoint(previousPoint: Point, nextPoint: Point): Graph {
-    const nextPoints = this.points.map((point) =>
+    const nextPoints = map(this.points, (point) =>
       point.equals(previousPoint) ? nextPoint : point,
     );
-    const nextSegments = this.segments.map((segment) =>
-      segment.includes(previousPoint)
+    const nextSegments = map(this.segments, (segment) =>
+      segment.includesPoint(previousPoint)
         ? new Segment(
             nextPoint,
             segment.p1.equals(previousPoint) ? segment.p2 : segment.p1,
@@ -58,7 +62,7 @@ export class Graph {
   }
 
   public addSegmentIfNotExist(nextSegment: Segment): Graph {
-    if (this.segments.some((segment) => segment.equals(nextSegment))) {
+    if (some(this.segments, (segment) => segment.equals(nextSegment))) {
       // nothing to do, segment already exists.
       return this;
     }

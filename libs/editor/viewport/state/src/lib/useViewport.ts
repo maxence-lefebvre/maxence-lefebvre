@@ -2,6 +2,7 @@ import { usePersistableState } from '@feyroads/ext/react/hooks';
 import { Point } from '@feyroads/math/graph';
 import { GraphState } from '@feyroads/math/state';
 import Konva from 'konva';
+import { some } from 'lodash';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
@@ -72,7 +73,7 @@ export const useViewport = ({
   const isStageDraggable =
     !graphState.selectedPoint &&
     !graphState.hoveredPoint &&
-    !graphState.graph.points.some((point) => point.isDragging);
+    !some(graphState.graph.points, 'isDragging');
 
   const onDragEndCanvas: NonNullable<
     KonvaNodeEvents['onDragEnd'] | KonvaNodeEvents['onDragMove']

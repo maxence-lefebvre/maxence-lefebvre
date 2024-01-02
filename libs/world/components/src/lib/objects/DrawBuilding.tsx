@@ -1,6 +1,7 @@
 import { useViewportContext } from '@feyroads/editor/viewport/state';
 import { DrawPolygon } from '@feyroads/math/components';
 import { Building } from '@feyroads/world/core';
+import { map } from 'lodash';
 import { Fragment, memo, useMemo } from 'react';
 
 export type DrawBuildingProps = {
@@ -35,7 +36,7 @@ export const DrawBuilding = memo(function DrawBuilding({
         stroke="rgba(0,0,0,0.2)"
         strokeWidth={20}
       />
-      {sides.map((side) => (
+      {map(sides, (side) => (
         <DrawPolygon
           key={side.hash()}
           polygon={side}
@@ -49,7 +50,7 @@ export const DrawBuilding = memo(function DrawBuilding({
         stroke="lightpink"
         strokeWidth={6}
       />
-      {roof.map((side) => (
+      {map(roof, (side) => (
         <DrawPolygon
           key={side.hash()}
           polygon={side}

@@ -1,6 +1,7 @@
+import { clone, forEach, includes, invokeMap, map, some } from 'lodash';
+
 import { Point } from './Point';
 import { Segment } from './Segment';
-import { clone } from 'lodash';
 
 export class Polygon {
   public constructor(
@@ -18,18 +19,16 @@ export class Polygon {
   public static union(polygons: Polygon[]) {
     const segments: Segment[] = [];
 
-    polygons.forEach((polygon, i) => {
-      polygon.segments.forEach((segment) => {
-        // FIXME: looks like we keep segments that belong to 3 polygons.
-        // Keep the segment if no other polygons contains that segment
+    forEach(polygons, (polygon, i) => {
+      forEach(polygon.segments, (segment) => {
         if (
-          !polygons.some(
+          !some(
+            polygons,
             (polygonB, j) => i !== j && polygonB.containsSegment(segment),
-          )
+          ) &&
+          !some(segments, (keptSegment) => keptSegment.equals(segment))
         ) {
-          if (!segments.some((keptSegment) => keptSegment.equals(segment))) {
-            segments.push(segment);
-          }
+          segments.push(segment);
         }
       });
     });
@@ -72,7 +71,7 @@ export class Polygon {
 
         const { point, offset } = intersection;
 
-        if ([0, 1].includes(offset)) {
+        if (includes([0, 1], offset)) {
           continue;
         }
 
@@ -113,7 +112,7 @@ export class Polygon {
 
     let intersectionCount = 0;
 
-    this.segments.forEach((segment) => {
+    forEach(this.segments, (segment) => {
       const intersection = new Segment(outerPoint, point).intersect(segment);
       if (intersection) {
         intersectionCount++;
@@ -124,20 +123,18 @@ export class Polygon {
   }
 
   public intersects(polygon: Polygon) {
-    return this.segments.some((segmentA) =>
-      polygon.segments.some((segmentB) => segmentB.intersect(segmentA)),
+    return some(this.segments, (segmentA) =>
+      some(polygon.segments, (segmentB) => segmentB.intersect(segmentA)),
     );
   }
 
   public distanceToPoint(point: Point) {
-    return Math.min(
-      ...this.segments.map((segment) => segment.distanceToPoint(point)),
-    );
+    return Math.min(...invokeMap(this.segments, 'distanceToPoint', point));
   }
 
   distanceTo(polygon: Polygon) {
     return Math.min(
-      ...this.points.map((point) => polygon.distanceToPoint(point)),
+      ...map(this.points, (point) => polygon.distanceToPoint(point)),
     );
   }
 

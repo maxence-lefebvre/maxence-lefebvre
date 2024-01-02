@@ -1,6 +1,8 @@
-import { Point } from './primitives';
-import { Graph } from './Graph';
 import invariant from 'invariant';
+import { reduce } from 'lodash';
+
+import { Graph } from './Graph';
+import { Point } from './primitives';
 
 export class PointSearcher {
   public static findNearestPoint(referencePoint: Point, graph: Graph) {
@@ -8,7 +10,8 @@ export class PointSearcher {
 
     const [firstPoint] = graph.points;
 
-    const [nearestPoint] = graph.points.reduce(
+    const [nearestPoint] = reduce(
+      graph.points,
       ([nearest, minDist]: [Point, number], point) => {
         const dist = referencePoint.distanceTo(point);
         return dist < minDist ? [point, dist] : [nearest, minDist];

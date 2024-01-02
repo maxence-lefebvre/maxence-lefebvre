@@ -1,7 +1,8 @@
-import { Envelope, Graph, Point, Polygon, Segment } from '@feyroads/math/graph';
-import { defaultsDeep } from 'lodash';
 import { linearInterpolation } from '@feyroads/math/core';
+import { Envelope, Graph, Point, Polygon, Segment } from '@feyroads/math/graph';
+import { defaultsDeep, filter, map, some } from 'lodash';
 import { LRUCache } from 'lru-cache';
+
 import { Building, Tree } from './objects';
 
 export type WorldGraphicOptions = {
@@ -78,7 +79,8 @@ export class World {
       defaultWorldGraphicOptions,
     );
 
-    const roadSurfaces = this.graph.segments.map(
+    const roadSurfaces = map(
+      this.graph.segments,
       (segment) => new Envelope(segment, this.graphicOptions.roads),
     );
 
@@ -87,7 +89,7 @@ export class World {
       medianLines: this.graph.segments,
       borders: Polygon.union(
         Polygon.breakSegmentsAtIntersectionsForAll(
-          roadSurfaces.map(({ polygon }) => polygon),
+          map(roadSurfaces, 'polygon'),
         ),
       ),
     };
@@ -109,7 +111,8 @@ export class World {
 
     const thickEnvelopeWidth = roadWidth + buildingWidth + 2 * buildingSpacing;
 
-    const thickEnvelopes = this.graph.segments.map(
+    const thickEnvelopes = map(
+      this.graph.segments,
       (segment) =>
         new Envelope(segment, {
           width: thickEnvelopeWidth,
@@ -118,11 +121,14 @@ export class World {
     );
     this.debug.roadsThickEnvelopes = thickEnvelopes;
 
-    const guides = Polygon.union(
-      Polygon.breakSegmentsAtIntersectionsForAll(
-        thickEnvelopes.map(({ polygon }) => polygon),
+    const guides = filter(
+      Polygon.union(
+        Polygon.breakSegmentsAtIntersectionsForAll(
+          map(thickEnvelopes, 'polygon'),
+        ),
       ),
-    ).filter((guide) => guide.length() >= buildingMinLength);
+      (guide) => guide.length() >= buildingMinLength,
+    );
     this.debug.buildingGuides = guides;
 
     const supports = guides.flatMap((guide) => {
@@ -159,7 +165,8 @@ export class World {
 
     this.debug.buildingSupports = supports;
 
-    const bases = supports.map(
+    const bases = map(
+      supports,
       (support) => new Envelope(support, { width: buildingWidth }),
     );
 
@@ -179,7 +186,7 @@ export class World {
 
     this.debug.buildingBases = bases;
 
-    return bases.map((base) => new Building(base));
+    return map(bases, (base) => new Building(base));
   }
 
   generateTrees() {
@@ -198,10 +205,10 @@ export class World {
       ...this.buildings.flatMap(({ base }) => base.points),
     ];
 
-    const leftestPoint = Math.min(...worldPoints.map(({ x }) => x));
-    const rightestPoint = Math.max(...worldPoints.map(({ x }) => x));
-    const highestPoint = Math.min(...worldPoints.map(({ y }) => y));
-    const lowestPoint = Math.max(...worldPoints.map(({ y }) => y));
+    const leftestPoint = Math.min(...map(worldPoints, 'x'));
+    const rightestPoint = Math.max(...map(worldPoints, 'x'));
+    const highestPoint = Math.min(...map(worldPoints, 'y'));
+    const lowestPoint = Math.max(...map(worldPoints, 'y'));
 
     const worldPolygons = [
       ...this.buildings.flatMap(({ base }) => base),
@@ -244,7 +251,8 @@ export class World {
 
     // Don't keep the tree if it is inside or nearby a building or a road
     if (
-      worldPolygons.some(
+      some(
+        worldPolygons,
         (polygon) =>
           polygon.containsPoint(tree.center) ||
           polygon.distanceToPoint(tree.center) < treeSize / 2 + spacing,
@@ -255,7 +263,8 @@ export class World {
 
     // Trees shouldn't overlap
     if (
-      otherTrees.some(
+      some(
+        otherTrees,
         (otherTree) =>
           otherTree.center.distanceTo(tree.center) < treeSize + spacing,
       )
@@ -264,7 +273,8 @@ export class World {
     }
 
     // Trees shouldn't grow in the middle of nowhere
-    return worldPolygons.some(
+    return some(
+      worldPolygons,
       (polygon) => polygon.distanceToPoint(tree.center) < 2 * treeSize,
     );
   }

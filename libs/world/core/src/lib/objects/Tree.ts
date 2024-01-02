@@ -1,6 +1,7 @@
-import { Point, Polygon } from '@feyroads/math/graph';
-import { defaultsDeep } from 'lodash';
 import { linearInterpolation } from '@feyroads/math/core';
+import { Point, Polygon } from '@feyroads/math/graph';
+import { defaultsDeep, map } from 'lodash';
+
 import { WithBasePolygon } from './types';
 
 export type TreeGraphicOptions = {
@@ -85,11 +86,11 @@ export class Tree implements WithBasePolygon {
 
     return [
       { color: 'rgb(30, 50, 70)', polygon: this.base },
-      ...this.levelBases.map((levelBase) => {
+      ...map(this.levelBases, (levelBase) => {
         const center = this.center.linearInterpolation(treeTop, levelBase.t);
 
         const polygon = new Polygon(
-          levelBase.noisyRadiuses.map((noisyRadius) =>
+          map(levelBase.noisyRadiuses, (noisyRadius) =>
             center.translate(noisyRadius.angle, noisyRadius.radius),
           ),
         );

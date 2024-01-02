@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import { partition } from 'lodash';
+import { includes, partition, split, toLower } from 'lodash';
 import { useEffect, useRef } from 'react';
 
 const MODIFIERS = ['ctrl', 'alt', 'shift', 'meta'];
@@ -15,8 +15,8 @@ export const useKeyboard = (
   }, [callback]);
 
   useEffect(() => {
-    const [modifiers, keys] = partition(key.toLowerCase().split('+'), (k) =>
-      MODIFIERS.includes(k),
+    const [modifiers, keys] = partition(split(toLower(key), '+'), (k) =>
+      includes(MODIFIERS, k),
     );
 
     invariant(
@@ -25,16 +25,16 @@ export const useKeyboard = (
     );
 
     const handleEvent = (event: KeyboardEvent) => {
-      if (modifiers.includes('ctrl') && !event.ctrlKey) {
+      if (includes(modifiers, 'ctrl') && !event.ctrlKey) {
         return;
       }
-      if (modifiers.includes('alt') && !event.altKey) {
+      if (includes(modifiers, 'alt') && !event.altKey) {
         return;
       }
-      if (modifiers.includes('shift') && !event.shiftKey) {
+      if (includes(modifiers, 'shift') && !event.shiftKey) {
         return;
       }
-      if (modifiers.includes('meta') && !event.metaKey) {
+      if (includes(modifiers, 'meta') && !event.metaKey) {
         return;
       }
       if (event.key !== keys[0]) {

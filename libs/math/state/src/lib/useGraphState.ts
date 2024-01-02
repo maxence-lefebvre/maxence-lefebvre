@@ -1,5 +1,6 @@
 import { usePersistableState } from '@feyroads/ext/react/hooks';
 import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
+import { find } from 'lodash';
 import { useCallback, useState } from 'react';
 
 import { GraphState } from './types';
@@ -44,7 +45,6 @@ export const useGraphState = (): GraphState => {
     if (hoveredPoint && !selectedPoint) {
       setGraph((prev) => prev.removePoint(hoveredPoint));
       setHoveredPoint(null);
-      return;
     }
   }, [hoveredPoint, setGraph, selectedPoint]);
 
@@ -85,7 +85,7 @@ export const useGraphState = (): GraphState => {
   const moveDraggingPoint = useCallback(
     (newPosition: Point) => {
       newPosition.isDragging = true;
-      const draggedPoint = graph.points.find((point) => point.isDragging);
+      const draggedPoint = find(graph.points, 'isDragging');
 
       setGraph((prev) => {
         return draggedPoint
@@ -103,7 +103,7 @@ export const useGraphState = (): GraphState => {
   const dropDraggingPoint = useCallback(
     (newPosition: Point) => {
       setGraph((prev) => {
-        const draggedPoint = prev.points.find((point) => point.isDragging);
+        const draggedPoint = find(prev.points, 'isDragging');
         return draggedPoint
           ? prev.replacePoint(draggedPoint, newPosition)
           : prev;

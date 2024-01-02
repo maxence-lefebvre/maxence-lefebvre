@@ -1,6 +1,7 @@
+import { useCallback } from 'react';
+
 import { useBoolState } from '@feyroads/ext/react/hooks';
 import { useGraphStateContext } from '@feyroads/math/state';
-import { useCallback } from 'react';
 
 export const useCanvasState = () => {
   const { selectedPoint } = useGraphStateContext();

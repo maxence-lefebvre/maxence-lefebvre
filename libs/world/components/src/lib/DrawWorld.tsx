@@ -2,6 +2,7 @@ import { useViewportContext } from '@feyroads/editor/viewport/state';
 import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
 import { Building, WithBasePolygon } from '@feyroads/world/core';
 import { useWorldContext } from '@feyroads/world/state';
+import { map } from 'lodash';
 import { Fragment, memo, useMemo } from 'react';
 
 import { DrawBuilding, DrawTree } from './objects';
@@ -25,7 +26,7 @@ export const DrawWorld = memo(function DrawWorld() {
 
   return (
     <Fragment>
-      {roads.surfaces.map((envelope, index) => (
+      {map(roads.surfaces, (envelope, index) => (
         <DrawEnvelope
           key={index}
           envelope={envelope}
@@ -34,7 +35,7 @@ export const DrawWorld = memo(function DrawWorld() {
           strokeWidth={15}
         />
       ))}
-      {roads.medianLines.map((segment) => (
+      {map(roads.medianLines, (segment) => (
         <DrawSegment
           key={segment.hash()}
           dash={[10, 10]}
@@ -43,7 +44,7 @@ export const DrawWorld = memo(function DrawWorld() {
           segment={segment}
         />
       ))}
-      {roads.borders.map((segment) => (
+      {map(roads.borders, (segment) => (
         <DrawSegment
           key={segment.hash()}
           segment={segment}
@@ -51,7 +52,7 @@ export const DrawWorld = memo(function DrawWorld() {
           width={4}
         />
       ))}
-      {items.map((item) => {
+      {map(items, (item) => {
         return item instanceof Building ? (
           <DrawBuilding key={item.hash()} building={item} />
         ) : (

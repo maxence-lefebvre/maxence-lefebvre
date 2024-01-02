@@ -1,6 +1,7 @@
 import { useGraphEditorContext } from '@feyroads/editor/graph/state';
 import { DrawPoint, DrawSegment } from '@feyroads/math/components';
 import { useGraphStateContext } from '@feyroads/math/state';
+import { map } from 'lodash';
 import { memo } from 'react';
 import { Layer } from 'react-konva';
 
@@ -23,7 +24,7 @@ export const DrawGraphEditor = memo(function DrawGraphEditor({
     <Layer opacity={0.5}>
       {creatingSegment && <DrawSegment dashed segment={creatingSegment} />}
 
-      {points.map((point, index) => (
+      {map(points, (point, index) => (
         <DrawPoint
           key={index}
           point={point}

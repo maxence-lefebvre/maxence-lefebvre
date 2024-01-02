@@ -6,6 +6,7 @@ import {
   DrawSegment,
 } from '@feyroads/math/components';
 import { useWorldContext } from '@feyroads/world/state';
+import { map } from 'lodash';
 import { memo } from 'react';
 import { Layer } from 'react-konva';
 
@@ -23,9 +24,16 @@ export const DrawDebug = memo(function DrawDebug({
     return null;
   }
 
+  const {
+    buildingBases,
+    buildingGuides,
+    buildingSupports,
+    roadsThickEnvelopes,
+  } = debug;
+
   return (
     <Layer opacity={0.6}>
-      {debug.roadsThickEnvelopes.map((building, index) => (
+      {map(roadsThickEnvelopes, (building, index) => (
         <DrawEnvelope
           key={index}
           envelope={building}
@@ -33,7 +41,7 @@ export const DrawDebug = memo(function DrawDebug({
           fill="rgba(255,0,0,.2)"
         />
       ))}
-      {debug.buildingGuides.map((guide) => (
+      {map(buildingGuides, (guide) => (
         <DrawSegment
           segment={guide}
           key={guide.hash()}
@@ -41,7 +49,7 @@ export const DrawDebug = memo(function DrawDebug({
           strokeWidth={4}
         />
       ))}
-      {debug.buildingSupports.map((guide) => (
+      {map(buildingSupports, (guide) => (
         <DrawSegment
           segment={guide}
           key={guide.hash()}
@@ -49,7 +57,7 @@ export const DrawDebug = memo(function DrawDebug({
           strokeWidth={4}
         />
       ))}
-      {debug.buildingBases.map((base, index) => (
+      {map(buildingBases, (base, index) => (
         <DrawEnvelope
           envelope={base}
           key={index}
@@ -57,7 +65,7 @@ export const DrawDebug = memo(function DrawDebug({
           stroke="transparent"
         />
       ))}
-      {trees.map((tree) => (
+      {map(trees, (tree) => (
         <DrawPolygon
           polygon={tree.base}
           key={tree.hash()}

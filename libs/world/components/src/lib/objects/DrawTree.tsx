@@ -1,6 +1,7 @@
 import { useViewportContext } from '@feyroads/editor/viewport/state';
 import { DrawPolygon } from '@feyroads/math/components';
 import { Tree } from '@feyroads/world/core';
+import { map } from 'lodash';
 import { Fragment, memo, useMemo } from 'react';
 
 export type DrawTreeProps = {
@@ -17,7 +18,7 @@ export const DrawTree = memo(function DrawTree({ tree }: DrawTreeProps) {
 
   return (
     <Fragment>
-      {levels.map(({ color, polygon }) => {
+      {map(levels, ({ color, polygon }) => {
         return (
           <DrawPolygon
             polygon={polygon}
