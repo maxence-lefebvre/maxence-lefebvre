@@ -10,6 +10,7 @@ export type DrawTreeProps = {
 
 export const DrawTree = memo(function DrawTree({
   tree,
+  // FIXME: lift into context?
   viewport: { center: viewportCenter },
 }: DrawTreeProps) {
   const levels = useMemo(
