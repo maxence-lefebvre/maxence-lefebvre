@@ -1,17 +1,13 @@
 import { Fragment, memo, useMemo } from 'react';
-import { Building, WithBasePolygon, World } from '@feyroads/world/core';
+import { Building, WithBasePolygon } from '@feyroads/world/core';
 import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
 import { DrawTree, DrawBuilding } from './objects';
 import { useViewportContext } from '@feyroads/editor/viewport/components';
+import { useWorldContext } from './useWorldContext';
 
-export type DrawWorldProps = {
-  world: World;
-};
-
-export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
+export const DrawWorld = memo(function DrawWorld() {
+  const { roads, buildings, trees } = useWorldContext();
   const { center: viewportCenter } = useViewportContext();
-
-  const { roads, buildings, trees } = world;
 
   const items = useMemo(
     () =>

@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import './styles.css';
 
 import { App } from './app/App';
+import { AppProviders } from './app/AppProviders';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -10,6 +11,8 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <StrictMode>
-    <App />
+    <AppProviders>
+      <App />
+    </AppProviders>
   </StrictMode>,
 );

@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@feyroads/editor/graph/components": [
+        "libs/editor/graph/components/src/index.ts"
+      ],
       "@feyroads/editor/viewport/components": [
         "libs/editor/viewport/components/src/index.ts"
       ],

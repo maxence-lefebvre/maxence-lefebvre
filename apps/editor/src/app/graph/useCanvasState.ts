@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useBoolState } from '@feyroads/ext/react/hooks';
-import { GraphState } from '@feyroads/math/components';
+import { useGraphStateContext } from '@feyroads/math/components';
 
-export const useCanvasState = ({ graphState }: { graphState: GraphState }) => {
-  const { selectedPoint } = graphState;
+export const useCanvasState = () => {
+  const { selectedPoint } = useGraphStateContext();
 
   const { isHoveringPoint, setHoveringPoint, setHoveringPointFalse } =
     useBoolState(false, 'hoveringPoint');

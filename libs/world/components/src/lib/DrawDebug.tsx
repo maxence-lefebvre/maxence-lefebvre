@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import { World } from '@feyroads/world/core';
 import { Layer } from 'react-konva';
 import {
   DrawEnvelope,
@@ -8,23 +7,21 @@ import {
   DrawSegment,
 } from '@feyroads/math/components';
 import { useViewportContext } from '@feyroads/editor/viewport/components';
+import { useWorldContext } from './useWorldContext';
 
 export type DrawDebugProps = {
   enabled?: boolean;
-  world: World;
 };
 
 export const DrawDebug = memo(function DrawDebug({
   enabled = false,
-  world,
 }: DrawDebugProps) {
+  const { debug, trees } = useWorldContext();
   const { center: viewportCenter } = useViewportContext();
 
   if (!enabled) {
     return null;
   }
-
-  const { debug, trees } = world;
 
   return (
     <Layer opacity={0.6}>
