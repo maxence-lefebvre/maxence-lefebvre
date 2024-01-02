@@ -1,7 +1,7 @@
-import { Fragment, memo, useMemo } from 'react';
-import { Building } from '@feyroads/world/core';
-import { DrawPolygon } from '@feyroads/math/components';
 import { useViewportContext } from '@feyroads/editor/viewport/state';
+import { DrawPolygon } from '@feyroads/math/components';
+import { Building } from '@feyroads/world/core';
+import { Fragment, memo, useMemo } from 'react';
 
 export type DrawBuildingProps = {
   building: Building;

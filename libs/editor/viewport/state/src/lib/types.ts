@@ -1,7 +1,7 @@
 import { Point } from '@feyroads/math/graph';
-import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
-import { RefObject } from 'react';
 import Konva from 'konva';
+import { RefObject } from 'react';
+import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 
 export type Viewport = {
   canvasRef: RefObject<Konva.Stage>;

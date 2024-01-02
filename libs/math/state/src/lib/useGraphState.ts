@@ -1,7 +1,8 @@
-import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
-import { GraphState } from './types';
-import { useCallback, useState } from 'react';
 import { usePersistableState } from '@feyroads/ext/react/hooks';
+import { Graph, Point, PointSearcher, Segment } from '@feyroads/math/graph';
+import { useCallback, useState } from 'react';
+
+import { GraphState } from './types';
 
 const SELECT_NEAREST_IF_DISTANCE_IS_LTE = 20;
 const STORAGE_KEY = 'feyroads::useGraph::graph';

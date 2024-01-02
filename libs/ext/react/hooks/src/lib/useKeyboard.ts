@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { partition } from 'lodash';
 import invariant from 'invariant';
+import { partition } from 'lodash';
+import { useEffect, useRef } from 'react';
 
 const MODIFIERS = ['ctrl', 'alt', 'shift', 'meta'];
 
