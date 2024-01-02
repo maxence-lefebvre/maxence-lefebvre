@@ -2,7 +2,7 @@ import { Envelope, Graph, Point, Polygon, Segment } from '@feyroads/math/graph';
 import { defaultsDeep } from 'lodash';
 import { linearInterpolation } from '@feyroads/math/core';
 import { LRUCache } from 'lru-cache';
-import { Tree } from './objects';
+import { Building, Tree } from './objects';
 
 export type WorldGraphicOptions = {
   roads: {
@@ -50,7 +50,7 @@ export type Roads = {
 };
 
 export class World {
-  public readonly buildings: Envelope[] = [];
+  public readonly buildings: Building[] = [];
 
   public readonly roads: Roads = {
     surfaces: [],
@@ -179,7 +179,7 @@ export class World {
 
     this.debug.buildingBases = bases;
 
-    return bases;
+    return bases.map((base) => new Building(base));
   }
 
   generateTrees() {
@@ -195,7 +195,7 @@ export class World {
 
     const worldPoints = [
       ...this.roads.borders.flatMap(({ p1, p2 }) => [p1, p2]),
-      ...this.buildings.flatMap(({ polygon }) => polygon.points),
+      ...this.buildings.flatMap(({ base }) => base.points),
     ];
 
     const leftestPoint = Math.min(...worldPoints.map(({ x }) => x));
@@ -204,7 +204,7 @@ export class World {
     const lowestPoint = Math.max(...worldPoints.map(({ y }) => y));
 
     const worldPolygons = [
-      ...this.buildings.flatMap(({ polygon }) => polygon),
+      ...this.buildings.flatMap(({ base }) => base),
       ...this.roads.surfaces.flatMap(({ polygon }) => polygon),
     ];
 

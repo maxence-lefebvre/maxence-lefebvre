@@ -1,7 +1,7 @@
 import { Fragment, memo } from 'react';
 import { World } from '@feyroads/world/core';
 import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
-import { DrawTree } from './DrawTree';
+import { DrawTree, DrawBuilding } from './objects';
 import { Viewport } from '@feyroads/editor/viewport/components';
 
 export type DrawWorldProps = {
@@ -41,13 +41,8 @@ export const DrawWorld = memo(function DrawWorld({
           width={4}
         />
       ))}
-      {world.buildings.map((building, index) => (
-        <DrawEnvelope
-          key={index}
-          envelope={building}
-          fill="brown"
-          stroke="brown"
-        />
+      {world.buildings.map((building) => (
+        <DrawBuilding key={building.hash()} building={building} />
       ))}
       {world.trees.map((tree) => {
         return <DrawTree tree={tree} key={tree.hash()} viewport={viewport} />;
