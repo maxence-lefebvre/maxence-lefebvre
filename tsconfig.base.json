@@ -15,6 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@feyroads/canvas/components": ["libs/canvas/components/src/index.ts"],
+      "@feyroads/canvas/state": ["libs/canvas/state/src/index.ts"],
       "@feyroads/editor/graph/components": [
         "libs/editor/graph/components/src/index.ts"
       ],
@@ -24,6 +26,7 @@
       ],
       "@feyroads/ext/array": ["libs/ext/array/src/index.ts"],
       "@feyroads/ext/react/hooks": ["libs/ext/react/hooks/src/index.ts"],
+      "@feyroads/kernel/debug": ["libs/kernel/debug/src/index.ts"],
       "@feyroads/math/components": ["libs/math/components/src/index.ts"],
       "@feyroads/math/core": ["libs/math/core/src/index.ts"],
       "@feyroads/math/graph": ["libs/math/graph/src/index.ts"],

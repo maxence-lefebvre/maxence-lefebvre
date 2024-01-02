@@ -1,5 +1,5 @@
 import { Envelope, Point, Polygon } from '@feyroads/math/graph';
-import { defaultsDeep, invokeMap } from 'lodash';
+import { defaultsDeep, map } from 'lodash';
 
 import { WithBasePolygon } from './types';
 
@@ -34,7 +34,7 @@ export class Building implements WithBasePolygon {
 
   getBuildingCeiling(viewportCenter: Point) {
     return new Polygon(
-      invokeMap<Point>(this.base.points, (point) =>
+      map(this.base.points, (point) =>
         point.getFake3DProjection(
           viewportCenter,
           this.graphicOptions.height * 0.6,
@@ -70,7 +70,7 @@ export class Building implements WithBasePolygon {
 
     const [baseA, baseB, baseC, baseD] = this.base.points;
     const baseMidpoints = [baseA.average(baseB), baseC.average(baseD)];
-    const ceilingMidpoints = invokeMap<Point>(baseMidpoints, (point) =>
+    const ceilingMidpoints = map(baseMidpoints, (point) =>
       point.getFake3DProjection(viewportCenter, this.graphicOptions.height),
     );
 

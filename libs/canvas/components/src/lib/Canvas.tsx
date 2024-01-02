@@ -1,18 +1,16 @@
 import { css } from '@emotion/react';
+import { useAppCanvasContext } from '@feyroads/canvas/state';
+import { useGraphEditorContext } from '@feyroads/editor/graph/state';
+import { useViewportContext } from '@feyroads/editor/viewport/state';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 import { Stage } from 'react-konva';
 
-import { useGraphEditorContext } from '@feyroads/editor/graph/state';
-import { useViewportContext } from '@feyroads/editor/viewport/state';
 
 export type CanvasProps = {
-  isHoveringPoint: boolean;
   children: ReactNode;
 };
-export const Canvas = memo(function Canvas({
-  children,
-  isHoveringPoint,
-}: CanvasProps) {
+export const Canvas = memo(function Canvas({ children }: CanvasProps) {
+  const { isHoveringPoint } = useAppCanvasContext();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const {

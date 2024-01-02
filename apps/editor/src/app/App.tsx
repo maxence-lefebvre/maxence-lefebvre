@@ -1,14 +1,11 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { memo } from 'react';
 import { Layer } from 'react-konva';
 
+import { Canvas, CanvasControls } from '@feyroads/canvas/components';
 import { DrawGraphEditor } from '@feyroads/editor/graph/components';
-import { useBoolState } from '@feyroads/ext/react/hooks';
 import { DrawDebug, DrawWorld } from '@feyroads/world/components';
-
-import { Canvas } from './graph/Canvas';
-import { GraphControls } from './graph/GraphControls';
-import { useCanvasState } from './graph/useCanvasState';
 
 const AppContainer = styled.div`
   display: flex;
@@ -22,27 +19,17 @@ const AppContainer = styled.div`
   align-items: center;
 `;
 
-export const App = () => {
-  const { isHoveringPoint, onMouseEnterPoint, onMouseLeavePoint } =
-    useCanvasState();
-  const debugMode = useBoolState(
-    window.location.hostname === 'localhost',
-    'debugMode',
-  );
-
+export const App = memo(function App() {
   return (
     <AppContainer>
-      <Canvas isHoveringPoint={isHoveringPoint}>
+      <Canvas>
         <Layer>
           <DrawWorld />
         </Layer>
-        <DrawDebug enabled={debugMode.isDebugMode} />
-        <DrawGraphEditor
-          onMouseEnterPoint={onMouseEnterPoint}
-          onMouseLeavePoint={onMouseLeavePoint}
-        />
+        <DrawDebug />
+        <DrawGraphEditor />
       </Canvas>
-      <GraphControls
+      <CanvasControls
         css={css`
           position: absolute;
           top: 20px;
@@ -52,8 +39,7 @@ export const App = () => {
           background-color: rgba(0, 0, 0, 0.5);
           padding: 10px;
         `}
-        debugMode={debugMode}
       />
     </AppContainer>
   );
-};
+});

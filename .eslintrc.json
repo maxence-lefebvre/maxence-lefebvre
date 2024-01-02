@@ -24,6 +24,7 @@
       ],
       "rules": {
         "lodash/import-scope": ["error", "member"],
+        "lodash/prefer-invoke-map": "off",
         "import/order": [
           "warn",
           {

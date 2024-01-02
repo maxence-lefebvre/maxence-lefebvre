@@ -1,4 +1,5 @@
 import { useViewportContext } from '@feyroads/editor/viewport/state';
+import { useDebugModeContext } from '@feyroads/kernel/debug';
 import {
   DrawEnvelope,
   DrawPoint,
@@ -10,17 +11,12 @@ import { map } from 'lodash';
 import { memo } from 'react';
 import { Layer } from 'react-konva';
 
-export type DrawDebugProps = {
-  enabled?: boolean;
-};
-
-export const DrawDebug = memo(function DrawDebug({
-  enabled = false,
-}: DrawDebugProps) {
+export const DrawDebug = memo(function DrawDebug() {
+  const { isDebugMode } = useDebugModeContext();
   const { debug, trees } = useWorldContext();
   const { center: viewportCenter } = useViewportContext();
 
-  if (!enabled) {
+  if (!isDebugMode) {
     return null;
   }
 
