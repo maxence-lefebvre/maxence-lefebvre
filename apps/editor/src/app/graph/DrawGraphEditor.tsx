@@ -1,25 +1,24 @@
 import { memo } from 'react';
-import { GraphEditor } from './types';
-import { DrawPoint, DrawSegment, GraphState } from '@feyroads/math/components';
+import {
+  DrawPoint,
+  DrawSegment,
+  useGraphStateContext,
+} from '@feyroads/math/components';
 import { Layer } from 'react-konva';
+import { useGraphEditorContext } from './useGraphEditorContext';
 
 export type DrawGraphEditorProps = {
-  graphState: GraphState;
-  graphEditor: GraphEditor;
-
   onMouseEnterPoint: VoidFunction;
   onMouseLeavePoint: VoidFunction;
 };
 
 export const DrawGraphEditor = memo(function DrawGraphEditor({
-  graphState,
-  graphEditor,
   onMouseEnterPoint,
   onMouseLeavePoint,
 }: DrawGraphEditorProps) {
-  const { graph, hoveredPoint, selectedPoint } = graphState;
+  const { graph, hoveredPoint, selectedPoint } = useGraphStateContext();
   const { onDragMovePoint, onDragStartPoint, creatingSegment, onDragEndPoint } =
-    graphEditor;
+    useGraphEditorContext();
 
   const { points } = graph;
 

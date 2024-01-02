@@ -1,18 +1,15 @@
 import { Fragment, memo, useMemo } from 'react';
 import { Tree } from '@feyroads/world/core';
 import { DrawPolygon } from '@feyroads/math/components';
-import { Viewport } from '@feyroads/editor/viewport/components';
+import { useViewportContext } from '@feyroads/editor/viewport/components';
 
 export type DrawTreeProps = {
   tree: Tree;
-  viewport: Viewport;
 };
 
-export const DrawTree = memo(function DrawTree({
-  tree,
-  // FIXME: lift into context?
-  viewport: { center: viewportCenter },
-}: DrawTreeProps) {
+export const DrawTree = memo(function DrawTree({ tree }: DrawTreeProps) {
+  const { center: viewportCenter } = useViewportContext();
+
   const levels = useMemo(
     () => tree.getTreeLevels(viewportCenter),
     [tree, viewportCenter],

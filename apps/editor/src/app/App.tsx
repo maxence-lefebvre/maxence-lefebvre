@@ -8,8 +8,12 @@ import { Canvas } from './graph/Canvas';
 import { useCanvasState } from './graph/useCanvasState';
 import { useWorld } from './graph/useWorld';
 import { useBoolState } from '@feyroads/ext/react/hooks';
-import { useViewport } from '@feyroads/editor/viewport/components';
-import { useGraphState } from '@feyroads/math/components';
+import {
+  useViewport,
+  ViewportContext,
+} from '@feyroads/editor/viewport/components';
+import { GraphStateContext, useGraphState } from '@feyroads/math/components';
+import { GraphEditorContext } from './graph/GraphEditorContext';
 
 const AppContainer = styled.div`
   display: flex;
@@ -32,32 +36,24 @@ export const App = () => {
   );
 
   return (
-    <AppContainer>
-      <Canvas
-        graphEditor={graphEditor}
-        viewport={viewport}
-        isHoveringPoint={isHoveringPoint}
-      >
-        <Layer>
-          <DrawWorld world={world} viewport={viewport} />
-        </Layer>
-        <DrawDebug
-          enabled={debugMode.isDebugMode}
-          world={world}
-          viewport={viewport}
-        />
-        <DrawGraphEditor
-          graphState={graphState}
-          graphEditor={graphEditor}
-          onMouseEnterPoint={onMouseEnterPoint}
-          onMouseLeavePoint={onMouseLeavePoint}
-        />
-      </Canvas>
-      <GraphControls
-        graphState={graphState}
-        viewport={viewport}
-        debugMode={debugMode}
-      />
-    </AppContainer>
+    <GraphStateContext.Provider value={graphState}>
+      <ViewportContext.Provider value={viewport}>
+        <GraphEditorContext.Provider value={graphEditor}>
+          <AppContainer>
+            <Canvas isHoveringPoint={isHoveringPoint}>
+              <Layer>
+                <DrawWorld world={world} />
+              </Layer>
+              <DrawDebug enabled={debugMode.isDebugMode} world={world} />
+              <DrawGraphEditor
+                onMouseEnterPoint={onMouseEnterPoint}
+                onMouseLeavePoint={onMouseLeavePoint}
+              />
+            </Canvas>
+            <GraphControls debugMode={debugMode} />
+          </AppContainer>
+        </GraphEditorContext.Provider>
+      </ViewportContext.Provider>
+    </GraphStateContext.Provider>
   );
 };

@@ -7,19 +7,19 @@ import {
   DrawPolygon,
   DrawSegment,
 } from '@feyroads/math/components';
-import { Viewport } from '@feyroads/editor/viewport/components';
+import { useViewportContext } from '@feyroads/editor/viewport/components';
 
 export type DrawDebugProps = {
   enabled?: boolean;
   world: World;
-  viewport: Viewport;
 };
 
 export const DrawDebug = memo(function DrawDebug({
   enabled = false,
   world,
-  viewport,
 }: DrawDebugProps) {
+  const { center: viewportCenter } = useViewportContext();
+
   if (!enabled) {
     return null;
   }
@@ -68,7 +68,7 @@ export const DrawDebug = memo(function DrawDebug({
           stroke="transparent"
         />
       ))}
-      <DrawPoint point={viewport.center} width={40} fill="red" />
+      <DrawPoint point={viewportCenter} width={40} fill="red" />
     </Layer>
   );
 });

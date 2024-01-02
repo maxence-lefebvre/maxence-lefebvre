@@ -1,28 +1,26 @@
 import { memo, ReactNode } from 'react';
-import { GraphEditor } from './types';
 import { css } from '@emotion/react';
 import { Stage } from 'react-konva';
-import { Viewport } from '@feyroads/editor/viewport/components';
+import { useViewportContext } from '@feyroads/editor/viewport/components';
+import { useGraphEditorContext } from './useGraphEditorContext';
 
 export type CanvasProps = {
-  viewport: Viewport;
-  graphEditor: GraphEditor;
-  children: ReactNode;
   isHoveringPoint: boolean;
+  children: ReactNode;
 };
 export const Canvas = memo(function Canvas({
-  viewport,
-  graphEditor,
   children,
   isHoveringPoint,
 }: CanvasProps) {
-  const { onDragEndCanvas, origin, isStageDraggable, scale } = viewport;
+  const { onDragEndCanvas, origin, isStageDraggable, scale } =
+    useViewportContext();
+
   const {
     onMouseMoveCanvas,
     onWheelCanvas,
     onClickCanvas,
     onContextMenuCanvas,
-  } = graphEditor;
+  } = useGraphEditorContext();
 
   return (
     <Stage
