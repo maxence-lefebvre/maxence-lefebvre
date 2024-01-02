@@ -64,7 +64,8 @@ export const DrawDebug = memo(function DrawDebug({
         <DrawPolygon
           polygon={tree.base.polygon}
           key={tree.hash()}
-          fill="rgba(0,255,0,.5)"
+          fill="rgba(255,50,0,.5)"
+          stroke="transparent"
         />
       ))}
       <DrawPoint point={viewport.center} width={40} fill="red" />

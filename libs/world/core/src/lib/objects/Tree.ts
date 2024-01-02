@@ -34,7 +34,7 @@ export class Tree {
     );
 
     this.base = {
-      color: '',
+      color: 'rgb(30, 50, 70)',
       polygon: this.generateLevelPolygon(this.center, this.graphicOptions.size),
     };
   }
@@ -64,7 +64,7 @@ export class Tree {
         level / (levelCount - 1),
       );
 
-      const color = `rgba(30, ${linearInterpolation(50, 200, t)}, 70, 1)`;
+      const color = `rgb(30, ${linearInterpolation(50, 200, t)}, 70)`;
       const size = linearInterpolation(treeSize, 40, t);
 
       levels.push({
