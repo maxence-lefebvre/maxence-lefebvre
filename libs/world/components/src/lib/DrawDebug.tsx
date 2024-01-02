@@ -6,8 +6,8 @@ import {
   DrawPolygon,
   DrawSegment,
 } from '@feyroads/math/components';
-import { useViewportContext } from '@feyroads/editor/viewport/components';
-import { useWorldContext } from './useWorldContext';
+import { useViewportContext } from '@feyroads/editor/viewport/state';
+import { useWorldContext } from '@feyroads/world/state';
 
 export type DrawDebugProps = {
   enabled?: boolean;

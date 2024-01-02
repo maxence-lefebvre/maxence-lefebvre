@@ -1,4 +1,4 @@
-import { GraphState } from '@feyroads/math/components';
+import { GraphState } from '@feyroads/math/state';
 import { useMemo } from 'react';
 import { World } from '@feyroads/world/core';
 

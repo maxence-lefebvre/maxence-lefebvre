@@ -1,8 +1,8 @@
 import { memo, ReactNode } from 'react';
-import { GraphStateContextProvider } from '@feyroads/math/components';
-import { ViewportContextProvider } from '@feyroads/editor/viewport/components';
-import { GraphEditorContextProvider } from '@feyroads/editor/graph/components';
-import { WorldContextProvider } from '@feyroads/world/components';
+import { GraphStateContextProvider } from '@feyroads/math/state';
+import { ViewportContextProvider } from '@feyroads/editor/viewport/state';
+import { GraphEditorContextProvider } from '@feyroads/editor/graph/state';
+import { WorldContextProvider } from '@feyroads/world/state';
 
 export type AppProvidersProps = {
   children: ReactNode;
@@ -14,9 +14,9 @@ export const AppProviders = memo(function AppProviders({
   return (
     <GraphStateContextProvider>
       <ViewportContextProvider>
-        <GraphEditorContextProvider>
-          <WorldContextProvider>{children}</WorldContextProvider>
-        </GraphEditorContextProvider>
+        <WorldContextProvider>
+          <GraphEditorContextProvider>{children}</GraphEditorContextProvider>
+        </WorldContextProvider>
       </ViewportContextProvider>
     </GraphStateContextProvider>
   );

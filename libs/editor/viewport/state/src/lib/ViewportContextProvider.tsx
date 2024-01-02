@@ -1,6 +1,6 @@
 import { memo, ReactNode } from 'react';
 import { useViewport } from './useViewport';
-import { useGraphStateContext } from '@feyroads/math/components';
+import { useGraphStateContext } from '@feyroads/math/state';
 import { ViewportContext } from './ViewportContext';
 
 export type ViewportContextProps = { children: ReactNode };

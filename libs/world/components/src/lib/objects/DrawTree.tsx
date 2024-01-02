@@ -1,7 +1,7 @@
 import { Fragment, memo, useMemo } from 'react';
 import { Tree } from '@feyroads/world/core';
 import { DrawPolygon } from '@feyroads/math/components';
-import { useViewportContext } from '@feyroads/editor/viewport/components';
+import { useViewportContext } from '@feyroads/editor/viewport/state';
 
 export type DrawTreeProps = {
   tree: Tree;

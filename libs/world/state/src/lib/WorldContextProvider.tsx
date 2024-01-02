@@ -1,7 +1,7 @@
 import { memo, ReactNode } from 'react';
 import { WorldContext } from './WorldContext';
 import { useWorld } from './useWorld';
-import { useGraphStateContext } from '@feyroads/math/components';
+import { useGraphStateContext } from '@feyroads/math/state';
 
 export type WorldContextProviderProps = {
   children: ReactNode;

@@ -18,16 +18,19 @@
       "@feyroads/editor/graph/components": [
         "libs/editor/graph/components/src/index.ts"
       ],
-      "@feyroads/editor/viewport/components": [
-        "libs/editor/viewport/components/src/index.ts"
+      "@feyroads/editor/graph/state": ["libs/editor/graph/state/src/index.ts"],
+      "@feyroads/editor/viewport/state": [
+        "libs/editor/viewport/state/src/index.ts"
       ],
       "@feyroads/ext/array": ["libs/ext/array/src/index.ts"],
       "@feyroads/ext/react/hooks": ["libs/ext/react/hooks/src/index.ts"],
       "@feyroads/math/components": ["libs/math/components/src/index.ts"],
       "@feyroads/math/core": ["libs/math/core/src/index.ts"],
       "@feyroads/math/graph": ["libs/math/graph/src/index.ts"],
+      "@feyroads/math/state": ["libs/math/state/src/index.ts"],
       "@feyroads/world/components": ["libs/world/components/src/index.ts"],
-      "@feyroads/world/core": ["libs/world/core/src/index.ts"]
+      "@feyroads/world/core": ["libs/world/core/src/index.ts"],
+      "@feyroads/world/state": ["libs/world/state/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

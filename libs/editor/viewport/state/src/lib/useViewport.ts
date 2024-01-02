@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { Point } from '@feyroads/math/graph';
 import { usePersistableState } from '@feyroads/ext/react/hooks';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
-import { GraphState } from '@feyroads/math/components';
+import { GraphState } from '@feyroads/math/state';
 import Konva from 'konva';
 
 const ORIGIN_STORAGE_KEY = 'feyroads::useViewport::origin';

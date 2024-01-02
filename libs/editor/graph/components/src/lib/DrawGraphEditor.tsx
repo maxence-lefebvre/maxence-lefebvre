@@ -1,11 +1,8 @@
 import { memo } from 'react';
-import {
-  DrawPoint,
-  DrawSegment,
-  useGraphStateContext,
-} from '@feyroads/math/components';
+import { DrawPoint, DrawSegment } from '@feyroads/math/components';
 import { Layer } from 'react-konva';
-import { useGraphEditorContext } from './useGraphEditorContext';
+import { useGraphEditorContext } from '@feyroads/editor/graph/state';
+import { useGraphStateContext } from '@feyroads/math/state';
 
 export type DrawGraphEditorProps = {
   onMouseEnterPoint: VoidFunction;

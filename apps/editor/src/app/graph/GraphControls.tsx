@@ -2,8 +2,9 @@ import { ComponentPropsWithoutRef, memo, useCallback } from 'react';
 import { DebugMode } from './types';
 import { css } from '@emotion/react';
 import { IconDeviceFloppy, IconTool, IconTrash } from '@tabler/icons-react';
-import { useViewportContext } from '@feyroads/editor/viewport/components';
-import { useGraphStateContext } from '@feyroads/math/components';
+import { useViewportContext } from '@feyroads/editor/viewport/state';
+import { useGraphStateContext } from '@feyroads/math/state';
+import { useKeyboard } from '@feyroads/ext/react/hooks';
 
 export type GraphControlsProps = ComponentPropsWithoutRef<'div'> & {
   debugMode: DebugMode;
@@ -20,6 +21,8 @@ export const GraphControls = memo(function GraphControls({
     saveGraph();
     saveViewportState();
   }, [saveGraph, saveViewportState]);
+
+  useKeyboard('ctrl+d', debugMode.toggleDebugMode);
 
   return (
     <div

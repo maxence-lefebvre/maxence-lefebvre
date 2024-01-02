@@ -1,11 +1,11 @@
 /* eslint-disable */
 export default {
-  displayName: 'editor-viewport-components',
-  preset: '../../../../jest.preset.js',
+  displayName: 'world-state',
+  preset: '../../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../../coverage/libs/editor/viewport/components',
+  coverageDirectory: '../../../coverage/libs/world/state',
 };

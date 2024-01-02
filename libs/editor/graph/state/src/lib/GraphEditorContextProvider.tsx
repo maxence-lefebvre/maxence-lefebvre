@@ -1,8 +1,8 @@
 import { memo, ReactNode } from 'react';
 import { GraphEditorContext } from './GraphEditorContext';
 import { useGraphEditor } from './useGraphEditor';
-import { useGraphStateContext } from '@feyroads/math/components';
-import { useViewportContext } from '@feyroads/editor/viewport/components';
+import { useGraphStateContext } from '@feyroads/math/state';
+import { useViewportContext } from '@feyroads/editor/viewport/state';
 
 export type GraphEditorContextProps = { children: ReactNode };
 export const GraphEditorContextProvider = memo(

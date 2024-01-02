@@ -1,8 +1,8 @@
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
 import { Stage } from 'react-konva';
-import { useViewportContext } from '@feyroads/editor/viewport/components';
-import { useGraphEditorContext } from '@feyroads/editor/graph/components';
+import { useViewportContext } from '@feyroads/editor/viewport/state';
+import { useGraphEditorContext } from '@feyroads/editor/graph/state';
 
 export type CanvasProps = {
   isHoveringPoint: boolean;
