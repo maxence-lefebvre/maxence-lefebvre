@@ -14,6 +14,7 @@ import {
 } from '@feyroads/editor/viewport/components';
 import { GraphStateContext, useGraphState } from '@feyroads/math/components';
 import { GraphEditorContext } from './graph/GraphEditorContext';
+import { css } from '@emotion/react';
 
 const AppContainer = styled.div`
   display: flex;
@@ -23,8 +24,6 @@ const AppContainer = styled.div`
   flex: 1 0 auto;
   width: 100vw;
   max-height: 100vh;
-
-  padding: 0 0 20px;
 
   align-items: center;
 `;
@@ -56,7 +55,18 @@ export const App = () => {
                 onMouseLeavePoint={onMouseLeavePoint}
               />
             </Canvas>
-            <GraphControls debugMode={debugMode} />
+            <GraphControls
+              css={css`
+                position: absolute;
+                top: 20px;
+                right: 20px;
+
+                flex-direction: column;
+                background-color: rgba(0, 0, 0, 0.5);
+                padding: 10px;
+              `}
+              debugMode={debugMode}
+            />
           </AppContainer>
         </GraphEditorContext.Provider>
       </ViewportContext.Provider>
