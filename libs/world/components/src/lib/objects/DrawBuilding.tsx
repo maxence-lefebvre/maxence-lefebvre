@@ -31,22 +31,22 @@ export const DrawBuilding = memo(function DrawBuilding({
     <Fragment>
       <DrawPolygon
         polygon={building.base}
-        fill="rgba(0,0,0,0.2)"
-        stroke="#AAA"
+        fill="white"
+        stroke="rgba(0,0,0,0.2)"
         strokeWidth={20}
       />
       {sides.map((side) => (
         <DrawPolygon
           key={side.hash()}
           polygon={side}
-          fill="white"
+          fill="lightpink"
           stroke="#AAA"
         />
       ))}
       <DrawPolygon
         polygon={building.getBuildingCeiling(viewportCenter)}
-        fill="white"
-        stroke="#AAA"
+        fill="lightpink"
+        stroke="lightpink"
         strokeWidth={6}
       />
       {roof.map((side) => (
