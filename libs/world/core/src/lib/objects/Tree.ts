@@ -1,6 +1,7 @@
 import { Point, Polygon } from '@feyroads/math/graph';
 import { defaultsDeep } from 'lodash';
 import { linearInterpolation } from '@feyroads/math/core';
+import { WithBasePolygon } from './types';
 
 export type TreeGraphicOptions = {
   size: number;
@@ -19,24 +20,24 @@ export type TreeLevel = {
   polygon: Polygon;
 };
 
-export class Tree {
+export class Tree implements WithBasePolygon {
   public readonly graphicOptions: TreeGraphicOptions;
 
-  public base: TreeLevel;
+  public readonly base: Polygon;
 
   constructor(
     public readonly center: Point,
-    graphicOptions?: TreeGraphicOptions,
+    graphicOptions?: Partial<TreeGraphicOptions>,
   ) {
     this.graphicOptions = defaultsDeep(
       graphicOptions,
       defaultTreeGraphicOptions,
     );
 
-    this.base = {
-      color: 'rgb(30, 50, 70)',
-      polygon: this.generateLevelPolygon(this.center, this.graphicOptions.size),
-    };
+    this.base = this.generateLevelPolygon(
+      this.center,
+      this.graphicOptions.size,
+    );
   }
 
   public hash() {
@@ -44,16 +45,17 @@ export class Tree {
   }
 
   public getTreeTop(viewportCenter: Point) {
-    return this.center.add(
-      this.center
-        .substract(viewportCenter)
-        .scale(this.graphicOptions.heightCoefficient),
+    return this.center.isomorph(
+      viewportCenter,
+      this.graphicOptions.heightCoefficient,
     );
   }
 
   public getTreeLevels(viewportCenter: Point) {
     const { levelCount, size: treeSize } = this.graphicOptions;
-    const levels: TreeLevel[] = [this.base];
+    const levels: TreeLevel[] = [
+      { color: 'rgb(30, 50, 70)', polygon: this.base },
+    ];
 
     const treeTop = this.getTreeTop(viewportCenter);
 

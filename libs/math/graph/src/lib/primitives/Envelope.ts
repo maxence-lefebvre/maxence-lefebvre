@@ -19,7 +19,7 @@ export class Envelope {
     const { p1, p2 } = this.skeleton;
 
     const radius = width / 2;
-    const alpha = p1.substract(p2).angle();
+    const alpha = p1.subtract(p2).angle();
     // clockwise
     const alphaCw = alpha + Math.PI / 2;
     // counterclockwise

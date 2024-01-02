@@ -33,7 +33,7 @@ export const useViewport = ({
   );
 
   const center = useMemo(
-    () => new Point(300, 300).substract(origin).scale(zoom),
+    () => new Point(300, 300).subtract(origin).scale(zoom),
     [origin, zoom],
   );
 
@@ -55,7 +55,7 @@ export const useViewport = ({
 
   const getMousePositionOnViewport = useCallback(
     (evt: MouseEvent) =>
-      new Point(evt.offsetX, evt.offsetY).substract(origin).scale(zoom),
+      new Point(evt.offsetX, evt.offsetY).subtract(origin).scale(zoom),
     [origin, zoom],
   );
 

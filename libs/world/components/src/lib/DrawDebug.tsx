@@ -62,7 +62,7 @@ export const DrawDebug = memo(function DrawDebug({
       ))}
       {trees.map((tree) => (
         <DrawPolygon
-          polygon={tree.base.polygon}
+          polygon={tree.base}
           key={tree.hash()}
           fill="rgba(255,50,0,.5)"
           stroke="transparent"

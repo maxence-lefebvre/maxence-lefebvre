@@ -28,6 +28,12 @@ export const DrawPolygon = memo(function DrawPolygon({
   );
 
   return (
-    <Shape fill="rgba(0,0,255,.3)" stroke="blue" sceneFunc={scene} {...props} />
+    <Shape
+      fill="rgba(0,0,255,.3)"
+      stroke="blue"
+      sceneFunc={scene}
+      lineJoin="miter"
+      {...props}
+    />
   );
 });

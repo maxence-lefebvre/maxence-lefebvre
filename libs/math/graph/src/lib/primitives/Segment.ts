@@ -68,7 +68,7 @@ export class Segment {
   }
 
   public directionVector() {
-    return this.p2.substract(this.p1).normalize();
+    return this.p2.subtract(this.p1).normalize();
   }
 
   public distanceToPoint(point: Point) {
@@ -83,12 +83,12 @@ export class Segment {
 
   public projectPoint(point: Point) {
     const directionVector = this.directionVector();
-    const a = point.substract(this.p1);
+    const a = point.subtract(this.p1);
     const scaleFactor = a.dot(directionVector);
 
     return {
       point: this.p1.add(directionVector.scale(scaleFactor)),
-      offset: scaleFactor / this.p2.substract(this.p1).magnitude(),
+      offset: scaleFactor / this.p2.subtract(this.p1).magnitude(),
     };
   }
 }

@@ -1,16 +1,34 @@
-import { Fragment, memo } from 'react';
-import { World } from '@feyroads/world/core';
+import { Fragment, memo, useMemo } from 'react';
+import { Building, WithBasePolygon, World } from '@feyroads/world/core';
 import { DrawEnvelope, DrawSegment } from '@feyroads/math/components';
 import { DrawTree, DrawBuilding } from './objects';
+import { useViewportContext } from '@feyroads/editor/viewport/components';
 
 export type DrawWorldProps = {
   world: World;
 };
 
 export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
+  const { center: viewportCenter } = useViewportContext();
+
+  const { roads, buildings, trees } = world;
+
+  const items = useMemo(
+    () =>
+      [...buildings, ...trees].toSorted(
+        (a: WithBasePolygon, b: WithBasePolygon) => {
+          return (
+            b.base.distanceToPoint(viewportCenter) -
+            a.base.distanceToPoint(viewportCenter)
+          );
+        },
+      ),
+    [buildings, trees, viewportCenter],
+  );
+
   return (
     <Fragment>
-      {world.roads.surfaces.map((envelope, index) => (
+      {roads.surfaces.map((envelope, index) => (
         <DrawEnvelope
           key={index}
           envelope={envelope}
@@ -19,7 +37,7 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
           strokeWidth={15}
         />
       ))}
-      {world.roads.medianLines.map((segment) => (
+      {roads.medianLines.map((segment) => (
         <DrawSegment
           key={segment.hash()}
           dash={[10, 10]}
@@ -28,7 +46,7 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
           segment={segment}
         />
       ))}
-      {world.roads.borders.map((segment) => (
+      {roads.borders.map((segment) => (
         <DrawSegment
           key={segment.hash()}
           segment={segment}
@@ -36,11 +54,12 @@ export const DrawWorld = memo(function DrawWorld({ world }: DrawWorldProps) {
           width={4}
         />
       ))}
-      {world.buildings.map((building) => (
-        <DrawBuilding key={building.hash()} building={building} />
-      ))}
-      {world.trees.map((tree) => {
-        return <DrawTree tree={tree} key={tree.hash()} />;
+      {items.map((item) => {
+        return item instanceof Building ? (
+          <DrawBuilding key={item.hash()} building={item} />
+        ) : (
+          <DrawTree key={item.hash()} tree={item} />
+        );
       })}
     </Fragment>
   );

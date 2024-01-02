@@ -20,12 +20,16 @@ export class Point {
     return Math.hypot(this.x - point.x, this.y - point.y);
   }
 
-  add(point: Point) {
+  public add(point: Point) {
     return new Point(this.x + point.x, this.y + point.y);
   }
 
-  substract(point: Point) {
+  public subtract(point: Point) {
     return new Point(this.x - point.x, this.y - point.y);
+  }
+
+  public average(point: Point) {
+    return this.add(point).scale(0.5);
   }
 
   public dot(point: Point) {
@@ -61,5 +65,16 @@ export class Point {
       linearInterpolation(this.x, point.x, t),
       linearInterpolation(this.y, point.y, t),
     );
+  }
+
+  public isomorph(viewportCenter: Point, scaleFactor: number) {
+    return this.add(this.subtract(viewportCenter).scale(scaleFactor));
+  }
+
+  public getFake3DProjection(viewportCenter: Point, height: number) {
+    const projectionDirection = this.subtract(viewportCenter).normalize();
+    const distance = this.distanceTo(viewportCenter);
+    const scaleFactor = (height * (2 * Math.atan(distance / 300))) / Math.PI;
+    return this.add(projectionDirection.scale(scaleFactor));
   }
 }
