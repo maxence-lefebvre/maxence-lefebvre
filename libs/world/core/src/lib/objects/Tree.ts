@@ -5,14 +5,20 @@ import { WithBasePolygon } from './types';
 
 export type TreeGraphicOptions = {
   size: number;
-  heightCoefficient: number;
+  height: number;
   levelCount: number;
 };
 
 export const defaultTreeGraphicOptions = {
   size: 160,
-  heightCoefficient: 0.1,
+  height: 150,
   levelCount: 7,
+};
+
+export type TreeLevelBase = {
+  t: number;
+  color: string;
+  noisyRadiuses: { angle: number; radius: number }[];
 };
 
 export type TreeLevel = {
@@ -24,6 +30,8 @@ export class Tree implements WithBasePolygon {
   public readonly graphicOptions: TreeGraphicOptions;
 
   public readonly base: Polygon;
+
+  private readonly levelBases: TreeLevelBase[] = [];
 
   constructor(
     public readonly center: Point,
@@ -38,6 +46,27 @@ export class Tree implements WithBasePolygon {
       this.center,
       this.graphicOptions.size,
     );
+
+    for (let i = 0; i < this.graphicOptions.levelCount; i++) {
+      const t = i / (this.graphicOptions.levelCount - 1);
+      const color = `rgb(30, ${linearInterpolation(50, 200, t)}, 70)`;
+      const radius = linearInterpolation(this.graphicOptions.size, 40, t) / 2;
+
+      const noisyRadiuses: TreeLevelBase['noisyRadiuses'] = [];
+
+      for (let a = 0; a < 2 * Math.PI; a += Math.PI / 16) {
+        noisyRadiuses.push({
+          angle: a,
+          radius: radius * linearInterpolation(0.5, 1, Math.random()),
+        });
+      }
+
+      this.levelBases.push({
+        t,
+        color,
+        noisyRadiuses,
+      });
+    }
   }
 
   public hash() {
@@ -45,37 +74,32 @@ export class Tree implements WithBasePolygon {
   }
 
   public getTreeTop(viewportCenter: Point) {
-    return this.center.isomorph(
+    return this.center.getFake3DProjection(
       viewportCenter,
-      this.graphicOptions.heightCoefficient,
+      this.graphicOptions.height,
     );
   }
 
-  public getTreeLevels(viewportCenter: Point) {
-    const { levelCount, size: treeSize } = this.graphicOptions;
-    const levels: TreeLevel[] = [
-      { color: 'rgb(30, 50, 70)', polygon: this.base },
-    ];
-
+  public getTreeLevels(viewportCenter: Point): TreeLevel[] {
     const treeTop = this.getTreeTop(viewportCenter);
 
-    for (let level = 0; level < levelCount; level++) {
-      const t = level / (levelCount - 1);
-      const center = this.center.linearInterpolation(
-        treeTop,
-        level / (levelCount - 1),
-      );
+    return [
+      { color: 'rgb(30, 50, 70)', polygon: this.base },
+      ...this.levelBases.map((levelBase) => {
+        const center = this.center.linearInterpolation(treeTop, levelBase.t);
 
-      const color = `rgb(30, ${linearInterpolation(50, 200, t)}, 70)`;
-      const size = linearInterpolation(treeSize, 40, t);
+        const polygon = new Polygon(
+          levelBase.noisyRadiuses.map((noisyRadius) =>
+            center.translate(noisyRadius.angle, noisyRadius.radius),
+          ),
+        );
 
-      levels.push({
-        color,
-        polygon: this.generateLevelPolygon(center, size),
-      });
-    }
-
-    return levels;
+        return {
+          color: levelBase.color,
+          polygon,
+        };
+      }),
+    ];
   }
 
   public generateLevelPolygon(point: Point, size: number) {

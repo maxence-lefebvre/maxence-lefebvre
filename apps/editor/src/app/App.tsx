@@ -20,6 +20,12 @@ const AppContainer = styled.div`
   flex-direction: column;
   gap: 20px;
 
+  flex: 1 0 auto;
+  width: 100vw;
+  max-height: 100vh;
+
+  padding: 0 0 20px;
+
   align-items: center;
 `;
 

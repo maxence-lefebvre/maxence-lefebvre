@@ -31,7 +31,7 @@ export class Building implements WithBasePolygon {
     return JSON.stringify(this);
   }
 
-  getBuildingTop(viewportCenter: Point) {
+  getBuildingCeiling(viewportCenter: Point) {
     return new Polygon(
       this.base.points.map((point) =>
         point.getFake3DProjection(viewportCenter, this.graphicOptions.height),

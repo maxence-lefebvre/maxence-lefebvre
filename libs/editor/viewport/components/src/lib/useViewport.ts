@@ -1,9 +1,10 @@
 import { Viewport } from './types';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Point } from '@feyroads/math/graph';
 import { usePersistableState } from '@feyroads/ext/react/hooks';
 import { KonvaNodeEvents } from 'react-konva/ReactKonvaCore';
 import { GraphState } from '@feyroads/math/components';
+import Konva from 'konva';
 
 const ORIGIN_STORAGE_KEY = 'feyroads::useViewport::origin';
 const ZOOM_STORAGE_KEY = 'feyroads::useViewport::zoom';
@@ -12,6 +13,8 @@ export const useViewport = ({
 }: {
   graphState: GraphState;
 }): Viewport => {
+  const canvasRef = useRef<Konva.Stage>(null);
+
   const [mousePosition, setMousePosition] = useState<Point | null>(null);
   const [origin, setOrigin, persistOrigin] = usePersistableState<Point>(
     ORIGIN_STORAGE_KEY,
@@ -32,10 +35,15 @@ export const useViewport = ({
     },
   );
 
-  const center = useMemo(
-    () => new Point(300, 300).subtract(origin).scale(zoom),
-    [origin, zoom],
-  );
+  const center = useMemo(() => {
+    const canvas = canvasRef.current;
+
+    const referencePoint = canvas
+      ? new Point(canvas.width() * 0.45, canvas.height() * 0.85)
+      : new Point(600 * 0.5, 600 * 0.75);
+
+    return referencePoint.subtract(origin).scale(zoom);
+  }, [origin, zoom]);
 
   const saveViewportState = useCallback(() => {
     persistOrigin();
@@ -44,7 +52,7 @@ export const useViewport = ({
 
   const bindZoom = useCallback(
     (nextZoom: number) => {
-      setZoom(Math.max(1, Math.min(5, nextZoom)));
+      setZoom(Math.max(1, Math.min(10, nextZoom)));
     },
     [setZoom],
   );
@@ -64,18 +72,20 @@ export const useViewport = ({
     !graphState.hoveredPoint &&
     !graphState.graph.points.some((point) => point.isDragging);
 
-  const onDragEndCanvas: NonNullable<KonvaNodeEvents['onDragEnd']> =
-    useCallback(
-      ({ target }) => {
-        if (!isStageDraggable) {
-          return;
-        }
-        setOrigin(new Point(target.x(), target.y()));
-      },
-      [isStageDraggable, setOrigin],
-    );
+  const onDragEndCanvas: NonNullable<
+    KonvaNodeEvents['onDragEnd'] | KonvaNodeEvents['onDragMove']
+  > = useCallback(
+    ({ target }) => {
+      if (!isStageDraggable) {
+        return;
+      }
+      setOrigin(new Point(target.x(), target.y()));
+    },
+    [isStageDraggable, setOrigin],
+  );
 
   return {
+    canvasRef,
     origin,
     setOrigin,
     center,
@@ -87,6 +97,7 @@ export const useViewport = ({
     setMousePosition,
     getMousePositionOnViewport,
     isStageDraggable,
+    onDragMoveCanvas: onDragEndCanvas,
     onDragEndCanvas,
   };
 };

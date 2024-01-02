@@ -13,7 +13,7 @@ export const DrawBuilding = memo(function DrawBuilding({
   const { center: viewportCenter } = useViewportContext();
 
   const ceiling = useMemo(
-    () => building.getBuildingTop(viewportCenter),
+    () => building.getBuildingCeiling(viewportCenter),
     [building, viewportCenter],
   );
 
@@ -44,7 +44,7 @@ export const DrawBuilding = memo(function DrawBuilding({
         />
       ))}
       <DrawPolygon
-        polygon={building.getBuildingTop(viewportCenter)}
+        polygon={building.getBuildingCeiling(viewportCenter)}
         fill="white"
         stroke="#AAA"
         strokeWidth={6}
