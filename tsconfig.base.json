@@ -24,7 +24,6 @@
       "@feyroads/editor/viewport/state": [
         "libs/editor/viewport/state/src/index.ts"
       ],
-      "@feyroads/ext/array": ["libs/ext/array/src/index.ts"],
       "@feyroads/ext/react/hooks": ["libs/ext/react/hooks/src/index.ts"],
       "@feyroads/kernel/debug": ["libs/kernel/debug/src/index.ts"],
       "@feyroads/math/components": ["libs/math/components/src/index.ts"],

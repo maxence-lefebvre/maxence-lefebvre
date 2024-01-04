@@ -2,14 +2,16 @@ import { css } from '@emotion/react';
 import { useAppCanvasContext } from '@feyroads/canvas/state';
 import { useGraphEditorContext } from '@feyroads/editor/graph/state';
 import { useViewportContext } from '@feyroads/editor/viewport/state';
+import { useGraphStateContext } from '@feyroads/math/state';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 import { Stage } from 'react-konva';
-
 
 export type CanvasProps = {
   children: ReactNode;
 };
+
 export const Canvas = memo(function Canvas({ children }: CanvasProps) {
+  const { selectedPoint, hoveredPoint } = useGraphStateContext();
   const { isHoveringPoint } = useAppCanvasContext();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -66,7 +68,13 @@ export const Canvas = memo(function Canvas({ children }: CanvasProps) {
               height: 100%;
               background-color: #2a5;
             `,
-            isHoveringPoint &&
+            hoveredPoint &&
+              (selectedPoint || !isHoveringPoint) &&
+              css`
+                cursor: pointer;
+              `,
+            !selectedPoint &&
+              isHoveringPoint &&
               css`
                 cursor: move;
               `,
