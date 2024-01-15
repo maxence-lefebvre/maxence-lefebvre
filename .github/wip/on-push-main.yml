@@ -24,7 +24,7 @@ jobs:
       number-of-agents: 3
       environment-variables: 'GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}'
       parallel-commands-on-agents: |
-        npx nx run-many --all --target=build --production
+        npx nx run-many --projects=tag:type:ui --target=build --production
       final-commands: |
         npx nx deploy --production
 
