@@ -1,5 +1,7 @@
 ### Hi there 👋
 
+![https://img.shields.io/github/deployments/maxence-lefebvre/maxence-lefebvre/github-pages?logo=github&label=github-pages](https://maxence-lefebvre.github.io/maxence-lefebvre/)
+
 <!--
 **maxence-lefebvre/maxence-lefebvre** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
