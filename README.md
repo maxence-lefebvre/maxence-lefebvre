@@ -1,7 +1,23 @@
-# Feyroads
+### Hi there 👋
 
-[Live](https://maxence-lefebvre.github.io/feyroads/)
+<!--
+**maxence-lefebvre/maxence-lefebvre** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
-## Source
+Here are some ideas to get you started:
 
-[Free Code Camp tutorial](https://www.youtube.com/watch?v=5iHejdqYIa8)
+- 🔭 I’m currently working on ...
+- 🌱 I’m currently learning ...
+- 👯 I’m looking to collaborate on ...
+- 🤔 I’m looking for help with ...
+- 💬 Ask me about ...
+- 📫 How to reach me: ...
+- 😄 Pronouns: ...
+- ⚡ Fun fact: ...
+-->
+
+- 🔭 I am a Senior Fullstack Engineer, working with TypeScript mostly on ReactJS (10 years) and NestJS.
+- 🌱 I’m currently learning DDD, Clean Architecture and how to be a better trainer.
+- 👯 I’m looking to collaborate on an interesting FOSS.
+- 🤔 I’m looking for help with how to be a better writer / trainer.
+- 📫 How to reach me: [LinkedIn](https://www.linkedin.com/in/maxence-lefebvre/)
+- 😄 Pronouns: he/him
