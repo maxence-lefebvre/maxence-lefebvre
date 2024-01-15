@@ -18,11 +18,11 @@ jobs:
       main-branch-name: main
       number-of-agents: 3
       parallel-commands: |
-        pnpm exec nx-cloud record -- pnpm exec nx format:check
+        npx nx-cloud record -- npx nx format:check
       parallel-commands-on-agents: |
-        pnpm exec nx affected --target=lint
-        pnpm exec nx affected --target=test --ci --code-coverage
-        pnpm exec nx affected --target=build --production
+        npx nx affected --target=lint
+        npx nx affected --target=test --ci --code-coverage
+        npx nx affected --target=build --production
 
   agents:
     name: Nx Cloud - Agents
