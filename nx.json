@@ -6,6 +6,11 @@
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
+    "@nx/vite:build": {
+      "options": {
+        "emptyOutDir": true
+      }
+    },
     "lint": {
       "cache": true,
       "inputs": [

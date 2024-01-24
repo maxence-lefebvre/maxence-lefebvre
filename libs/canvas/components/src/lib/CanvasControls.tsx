@@ -1,10 +1,10 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { useViewportContext } from '@feyroads/editor/viewport/state';
-import { useKeyboard } from '@feyroads/ext/react/hooks';
 import { useDebugModeContext } from '@feyroads/kernel/debug';
 import { useGraphStateContext } from '@feyroads/math/state';
 import { IconDeviceFloppy, IconTool, IconTrash } from '@tabler/icons-react';
+import { useKeyPress } from 'ahooks';
 import { ComponentPropsWithoutRef, memo, useCallback } from 'react';
 
 export type CanvasControlsProps = ComponentPropsWithoutRef<'div'>;
@@ -73,7 +73,7 @@ export const CanvasControls = memo(function CanvasControls({
     saveViewportState();
   }, [saveGraph, saveViewportState]);
 
-  useKeyboard('ctrl+d', toggleDebugMode);
+  useKeyPress('ctrl.d', toggleDebugMode);
 
   return (
     <div

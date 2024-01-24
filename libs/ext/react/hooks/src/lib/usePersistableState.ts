@@ -1,11 +1,10 @@
+import { useKeyPress } from 'ahooks';
 import {
   type Dispatch,
   type SetStateAction,
   useCallback,
   useState,
 } from 'react';
-
-import { useKeyboard } from './useKeyboard';
 
 export const usePersistableState = <T>(
   key: string,
@@ -29,7 +28,7 @@ export const usePersistableState = <T>(
     localStorage.setItem(key, serialize(value));
   }, [value, key, serialize]);
 
-  useKeyboard('ctrl+s', persist);
+  useKeyPress('ctrl.s', persist);
 
   return [value, setValue, persist];
 };
