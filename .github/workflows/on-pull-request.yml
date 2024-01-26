@@ -8,26 +8,132 @@ permissions:
   actions: read
   contents: read
 
+env:
+  NX_BRANCH: ${{ github.event.number || github.ref_name }}
+  NX_CLOUD_DISTRIBUTED_EXECUTION: true
+  NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT: 3
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+concurrency:
+  group: ${{ github.event.number }}
+  cancel-in-progress: true
+
 jobs:
   main:
     name: Nx Cloud - Main Job
-    uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.13.1
-    secrets:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-    with:
-      main-branch-name: main
-      number-of-agents: 3
-      parallel-commands: |
-        npx nx-cloud record -- npx nx format:check
-      parallel-commands-on-agents: |
-        npx nx affected --target=lint
-        npx nx affected --target=test --ci --code-coverage
-        npx nx affected --target=build --production
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v4
+        with:
+          # fetch all history so that `nx affected` commands can be run.
+          fetch-depth: 0
+      - name: derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+
+      - name: install pnpm using package.json#packageManager version
+        uses: pnpm/action-setup@v2
+      - name: install node using package.json#volta.node version
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'pnpm'
+      - name: install dependencies
+        run: pnpm install
+
+      - name: initialize nx cloud distributed CI run
+        run: npx nx-cloud start-ci-run
+
+      - name: run parallel commands
+        run: |
+          # initialize an array to store process IDs (PIDs)
+          pids=()
+
+          # commands to be run on main with env flag NX_CLOUD_DISTRIBUTED_EXECUTION set to false
+          function run_local_command() {
+            local command=$1
+            NX_CLOUD_DISTRIBUTED_EXECUTION=false $command & # run the command in the background
+            pids+=($!)  # store the PID of the background process
+          }
+
+          # function to run commands and store the PID
+          function run_command() {
+            local command=$1
+            $command &  # run the command in the background
+            pids+=($!)  # store the PID of the background process
+          }
+
+          run_local_command "npx nx-cloud record -- nx format:check"
+
+          # commands to be run on agents
+          run_command "npx nx affected --target=lint"
+          run_command "npx nx affected --target=test --ci --code-coverage"
+          run_command "npx nx affected --target=build --production"
+
+          # wait for all background processes to finish
+          for pid in ${pids[*]}; do
+            if ! wait $pid; then
+              # exit with an error status if any process fails
+              exit 1
+            fi
+          done
+
+          # exits with success status if a all processes complete successfully
+          exit 0
+
+      - name: nx cloud distributed CI run complete
+        run: |
+          npx nx-cloud stop-all-agents
+          npx nx-cloud complete-ci-run
+
+  generate-agents:
+    name: Nx Cloud - Generate Agents
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      agents-matrix: ${{ steps.set-matrix.outputs.matrix }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - id: set-matrix
+        name: Set matrix
+        # Turn the number-of-agents input into a JSON structure which is compatible with a GitHub job matrix strategy
+        run: |
+          AGENTS_JSON_ARRAY=$(node -e "console.log(JSON.stringify(Array.from(new Array($NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT)).map((_, i) => i + 1)));")
+          echo $AGENTS_JSON_ARRAY
+          echo "matrix=$AGENTS_JSON_ARRAY" >> $GITHUB_OUTPUT
 
   agents:
-    name: Nx Cloud - Agents
-    uses: nrwl/ci/.github/workflows/nx-cloud-agents.yml@v0.13.1
-    secrets:
-      NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-    with:
-      number-of-agents: 3
+    needs: generate-agents
+    name: Agent ${{ matrix.agent }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        agent: ${{ fromJson(needs.generate-agents.outputs.agents-matrix) }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v4
+
+      - name: install pnpm using package.json#packageManager version
+        uses: pnpm/action-setup@v2
+      - name: install node using package.json#volta.node version
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'pnpm'
+      - name: install dependencies
+        run: pnpm install
+
+      - name: start nx agent ${{ matrix.agent }}
+        run: npx nx-cloud start-agent
+        env:
+          NX_AGENT_NAME: ${{ matrix.agent }}
