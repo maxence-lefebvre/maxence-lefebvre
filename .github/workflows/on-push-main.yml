@@ -1,0 +1,60 @@
+# Unfortunately, we can't use the reusable workflow from NX since we need to use ${{ secrets}}
+# We should eject from the reusable workflow and use our own.
+
+name: On Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+# Needed for nx-set-shas within nx-cloud-main.yml, when run on the main branch
+permissions:
+  actions: read
+  contents: write
+  pages: write
+
+env:
+  NX_BRANCH: ${{ github.event.number || github.ref_name }}
+  NX_CLOUD_DISTRIBUTED_EXECUTION: false
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+concurrency:
+  group: on-push-to-main-${{ github.event.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    name: Nx Cloud - Main Job
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v4
+        with:
+          # fetch all history so that `nx affected` commands can be run.
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v4
+
+      - name: install pnpm using package.json#packageManager version
+        uses: pnpm/action-setup@v2
+      - name: install node using package.json#volta.node version
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'pnpm'
+      - name: install dependencies
+        run: pnpm install
+
+      - name: build all UI projects and deploy to production
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx nx run-many --projects=tag:type:ui --target=build --configuration production
+          npx nx deploy @maxence-lefebvre/root --configuration production
