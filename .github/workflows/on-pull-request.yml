@@ -15,7 +15,7 @@ env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 concurrency:
-  group: ${{ github.event.number }}
+  group: on-pull-request-${{ github.event.number || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
           # fetch all history so that `nx affected` commands can be run.
           fetch-depth: 0
       - name: derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v2
+        uses: nrwl/nx-set-shas@v4
 
       - name: install pnpm using package.json#packageManager version
         uses: pnpm/action-setup@v2
@@ -86,6 +86,7 @@ jobs:
           exit 0
 
       - name: nx cloud distributed CI run complete
+        if: always()
         run: |
           npx nx-cloud stop-all-agents
           npx nx-cloud complete-ci-run
