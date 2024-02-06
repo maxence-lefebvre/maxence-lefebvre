@@ -71,8 +71,8 @@ jobs:
 
           # commands to be run on agents
           run_command "npx nx affected --target=lint"
-          run_command "npx nx affected --target=test --ci --code-coverage"
-          run_command "npx nx affected --target=build --production"
+          run_command "npx nx affected --target=test --configuration ci"
+          run_command "npx nx affected --target=build --configuration production"
 
           # wait for all background processes to finish
           for pid in ${pids[*]}; do
