@@ -17,9 +17,17 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: ...
 -->
 
-- 🔭 I am a Senior Fullstack Engineer, working with TypeScript mostly on ReactJS (10 years) and NestJS.
-- 🌱 I’m currently learning DDD, Clean Architecture and how to be a better trainer.
-- 👯 I’m looking to collaborate on an interesting FOSS.
-- 🤔 I’m looking for help with how to be a better writer / trainer.
-- 📫 How to reach me: [LinkedIn](https://www.linkedin.com/in/maxence-lefebvre/)
-- 😄 Pronouns: he/him
+I am a Senior Fullstack Engineer working at [Rayon](https://rayon.design), to build an effortless CAD for demanding architects.
+
+I work mostly with Typescript & React 19, with knowledge in frameworks like NestJS, Vue, Svelte, SolidJS. I also contribute to our CI/CD pipelines and our infra as code. 
+
+I am currently learning:
+- how to better leverage AI in our job
+- Rust & the ECS pattern
+- nixpkg and how to improve our DX
+
+I have also always read and share a lot to keep up on the latest technologies, trends, and major updates.
+
+I’m always looking to collaborate on an interesting FOSS.
+
+📫 How to reach me: [LinkedIn](https://www.linkedin.com/in/maxence-lefebvre/)
