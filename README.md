@@ -24,7 +24,7 @@ I work mostly with Typescript & React 19, with knowledge in frameworks like Nest
 I am currently learning:
 - how to better leverage AI in our job
 - Rust & the ECS pattern
-- nixpkg and how to improve our DX
+- nixpkgs and how to improve our DX
 
 I have also always read and share a lot to keep up on the latest technologies, trends, and major updates.
 
